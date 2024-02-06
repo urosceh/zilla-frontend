@@ -28,6 +28,10 @@ export class AxiosClient {
 
     this._client.defaults.headers.common["Authorization"] = response.data.bearerToken;
 
+    // save the token to cookie
+    // document.cookie = `bearerToken=${response.data.bearerToken}; path=/`;
+    localStorage.setItem("bearerToken", response.data.bearerToken);
+
     const projects = await this.getAllUserProjects();
 
     console.log(projects);
@@ -35,11 +39,58 @@ export class AxiosClient {
 
   public async getAllUserProjects(): Promise<any> {
     try {
-      const response = await this._client.get("/project/all");
+      const response = await this._client.get("/project/all", {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: localStorage.getItem("bearerToken"),
+        },
+      });
 
       return response.data;
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  public async getIssue(projectKey: string, issueId: string): Promise<any> {
+    const response = await this._client.get(`/issue/${issueId}`, {
+      params: {projectKey},
+      headers: {
+        ...this._client.defaults.headers.common,
+        Authorization: localStorage.getItem("bearerToken"),
+      },
+    });
+
+    return response.data;
+  }
+
+  public async getAllProjectIssues(projectKey: string): Promise<any> {
+    try {
+      const response = await this._client.get(`issue/project/${projectKey}`, {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: localStorage.getItem("bearerToken"),
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getCurrentSprintIssues(projectKey: string): Promise<any> {
+    try {
+      const response = await this._client.get(`sprint/${projectKey}/issues`, {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: localStorage.getItem("bearerToken"),
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
     }
   }
 }

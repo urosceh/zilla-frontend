@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
+import {AxiosClient} from "../lib/AxiosClient";
 
 export const useIssue = () => {
+  const axiosInstance = AxiosClient.getInstance();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const createIssue = async () => {};
@@ -15,18 +18,16 @@ export const useIssue = () => {
 };
 
 export const useGetIssue = () => {
+  const axiosInstance = AxiosClient.getInstance();
+
   const [isLoading, setIsLoading] = useState(false);
   const [issue, setIssue] = useState(undefined);
 
-  const getIssue = async ({
-    issueId,
-    projectKey,
-  }: {
-    issueId: string;
-    projectKey: string;
-  }) => {
+  const getIssue = async ({issueId, projectKey}: {issueId: string; projectKey: string}) => {
     setIsLoading(true);
-    //API poziv
+    const issue = await axiosInstance.getIssue(projectKey, issueId);
+
+    setIssue(issue);
     setIsLoading(false);
   };
 
@@ -34,25 +35,5 @@ export const useGetIssue = () => {
     getIssue,
     issue,
     isLoading,
-  };
-};
-
-export const useIssues = ({ immediately }: { immediately: boolean }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [issues, setIssues] = useState([]);
-
-  const getIssues = async ({ filters }: { filters?: string[] } = {}) => {
-    // API poziv
-  };
-
-  useEffect(() => {
-    if (immediately) {
-      getIssues();
-    }
-  });
-
-  return {
-    getIssues,
-    issues,
   };
 };
