@@ -2,7 +2,7 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {AxiosClient} from "../lib/AxiosClient";
 
-const Login = (props: any) => {
+const Login = (setLoggedIn: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -48,6 +48,7 @@ const Login = (props: any) => {
     axiosInstance
       .login(email, password)
       .then(() => {
+        setLoggedIn(true);
         navigate("/");
       })
       .catch((error) => {
