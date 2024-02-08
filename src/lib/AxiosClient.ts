@@ -93,4 +93,19 @@ export class AxiosClient {
       throw error;
     }
   }
+
+  public async getProject(projectKey: string): Promise<any> {
+    try {
+      const response = await this._client.get(`/project/${projectKey}`, {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: localStorage.getItem("bearerToken"),
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

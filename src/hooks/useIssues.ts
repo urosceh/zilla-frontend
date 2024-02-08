@@ -32,7 +32,7 @@ export const useGetSprintIssues = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [issues, setIssues] = useState(undefined);
 
-  const getSprintIssues = async (projectKey: string) => {
+  const getSprintIssues = async (projectKey: string, sprintId?: number) => {
     try {
       setIsLoading(true);
       const issues = await axiosInstance.getCurrentSprintIssues(projectKey);
