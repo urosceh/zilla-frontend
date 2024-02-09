@@ -1,25 +1,23 @@
 import {useState} from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import "rsuite/dist/rsuite.min.css";
 import "./App.css";
-import Login from "./components/LoginComponent";
 import AllProjectsIssuesPage from "./pages/AllProjectIssuesPage";
 import IssuePage from "./pages/IssuePage";
-import KanbanPage from "./pages/KanbanPage";
+import LoginPage from "./pages/LoginPage";
 import ProjectsPage from "./pages/ProjectsPage";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<ProjectsPage />} />
+          <Route path="/login" element={<LoginPage setLoggedIn={setLoggedIn} />} />
           {/* <Route path="/" element={loggedIn ? <ProjectsPage /> : <Navigate to={{pathname: "/login"}} />} /> */}
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
+          <Route path="/" element={<ProjectsPage />} />
           <Route path="/:projectKey/issues" element={<AllProjectsIssuesPage />} />
-          <Route path="/:projectKey/kanban" element={<KanbanPage />} />
+          {/* <Route path="/:projectKey/kanban" element={<KanbanPage />} /> */}
           <Route path="/:projectKey/:issueId" element={<IssuePage />} />
         </Routes>
       </BrowserRouter>

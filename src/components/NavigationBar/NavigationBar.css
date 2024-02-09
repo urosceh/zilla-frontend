@@ -1,0 +1,112 @@
+.navigation-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--dark-background-color);
+  color: var(--text-color);
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.navigation-item {
+  margin-right: 20px;
+  cursor: pointer;
+  padding: 10px 20px;
+}
+
+.navigation-item:hover {
+  background-color: var(--selected);
+}
+
+.navigation-item > a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.dropdown-button {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.left-section .dropdown-content {
+  display: none;
+  margin-top: 10px;
+  left: 0;
+  margin-left: 30px;
+  position: absolute;
+  background-color: var(--drop-down-color);
+  min-width: 160px;
+  z-index: 1;
+  padding: 3px;
+}
+
+.left-section .dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.left-section .dropdown-content a {
+  color: var(--text-color);
+  padding: 7px;
+  text-decoration: none;
+  display: block;
+}
+
+.left-section .dropdown-content a:hover {
+  background-color: var(--dark-background-color);
+  cursor: pointer;
+}
+
+.right-section {
+  display: flex;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.cog {
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 10px 20px;
+}
+
+.cog:hover {
+  background-color: var(--selected);
+}
+
+.right-section .dropdown-content {
+  display: none;
+  margin-top: 10px;
+  right: 0;
+  margin-right: 30px;
+  position: absolute;
+  background-color: var(--drop-down-color);
+  min-width: 160px;
+  z-index: 1;
+}
+
+.right-section .dropdown-content.active {
+  display: block;
+  padding: 3px;
+}
+
+.right-section .dropdown-content.active a {
+  color: var(--text-color);
+  text-decoration: none;
+  padding: 10px;
+  display: block;
+}
+
+.right-section .dropdown-content.active a:hover {
+  background-color: var(--dark-background-color);
+}

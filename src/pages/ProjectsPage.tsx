@@ -1,27 +1,33 @@
-import {useEffect} from "react";
-import FilterToolbar from "../components/FilterToolbar";
+import {useEffect, useState} from "react";
+import NavigationBar from "../components/NavigationBar/NavigationBar";
+import ProjectsTable from "../components/ProjectsTable/ProjectsTable";
+import SearchComponent from "../components/SearchComponent/SearchComponent";
 import {useGetProjects} from "../hooks/useProjects";
 
 const ProjectsPage = () => {
-  // const filters = [
-  //   {
-  //     name: "Status",
-  //     options: ["Open", "In Progress", "Done"],
-  //     onChange: () => {},
-  //   },
-  //   {name: "Assignee", options: ["Me", "Unassigned"]},
-  // ];
   const {projects, getProjects, isLoading} = useGetProjects();
+
+  const [searchData, setSearchData] = useState("");
 
   useEffect(() => {
     getProjects();
-  }, []);
+  }, [searchData]);
 
   return (
     <div>
-      <FilterToolbar filters={[]} />
-      {isLoading && <h2>Loading</h2>}
-      {!isLoading && projects?.length && projects.map((project: any) => <h2 key={project.projectId}>{project.projectName}</h2>)}
+      {isLoading || !projects ? (
+        <div>Loading...</div>
+      ) : (
+        <div>
+          <NavigationBar />
+          <div className="search-filter">
+            <SearchComponent setData={setSearchData} placeholder="Search Project Name or Key..." />
+          </div>
+          <div className="projects-list">
+            <ProjectsTable projects={projects} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

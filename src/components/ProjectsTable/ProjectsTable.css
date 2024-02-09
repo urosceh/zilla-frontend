@@ -1,0 +1,31 @@
+.projects-table {
+  width: 100%;
+  margin: auto; /* Add margin for spacing from top */
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border-top: 1px solid var(--modal-color); /* Add thin line above table */
+  border-bottom: 1px solid var(--modal-color); /* Add thin line below table */
+  border-collapse: collapse; /* Merge cell borders */
+}
+
+.table-header {
+  background-color: var(--background-color); /* Set background color to match page background */
+  color: var(--text-color); /* Set text color to match page text color */
+  padding: 16px; /* Add padding to top and bottom */
+  text-align: left; /* Align text to the left */
+  border-bottom: 1px solid var(--modal-color); /* Add thin line below header */
+}
+
+.table-row {
+  border-bottom: 1px solid var(--modal-color); /* Add thin line below each row */
+}
+
+.table-cell {
+  padding: 16px;
+  text-align: left; /* Align text to the left */
+}
+
+.table-cell > a {
+  color: var(--selected);
+  text-decoration: underline;
+}
