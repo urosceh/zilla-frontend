@@ -1,8 +1,9 @@
-import {useState} from "react";
+import {Dispatch, SetStateAction, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {AxiosClient} from "../lib/AxiosClient";
+import {AxiosClient} from "../../lib/AxiosClient";
+import "./LoginComponent.css";
 
-const Login = (setLoggedIn: any) => {
+const Login = (props: {setLoggedIn: Dispatch<SetStateAction<boolean>>}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -48,7 +49,7 @@ const Login = (setLoggedIn: any) => {
     axiosInstance
       .login(email, password)
       .then(() => {
-        setLoggedIn(true);
+        props.setLoggedIn(true);
         navigate("/");
       })
       .catch((error) => {
@@ -57,28 +58,28 @@ const Login = (setLoggedIn: any) => {
   };
 
   return (
-    <div className={"mainContainer"}>
-      <div className={"titleContainer"}>
+    <div className={"main-container"}>
+      <div className={"title-container"}>
         <div>Login</div>
       </div>
       <br />
-      <div className={"inputContainer"}>
-        <input value={email} placeholder="Enter your email here" onChange={(ev) => setEmail(ev.target.value)} className={"inputBox"} />
-        <label className="errorLabel">{emailError}</label>
+      <div className={"input-container"}>
+        <input value={email} placeholder="Enter your email here" onChange={(ev) => setEmail(ev.target.value)} className={"input-box"} />
+        <label className="login-error-label">{emailError}</label>
       </div>
       <br />
-      <div className={"inputContainer"}>
+      <div className={"input-container"}>
         <input
           value={password}
           placeholder="Enter your password here"
           onChange={(ev) => setPassword(ev.target.value)}
-          className={"inputBox"}
+          className={"input-box"}
         />
-        <label className="errorLabel">{passwordError}</label>
+        <label className="login-error-label">{passwordError}</label>
       </div>
       <br />
-      <div className={"inputContainer"}>
-        <input className={"inputButton"} type="button" onClick={onButtonClick} value={"Log in"} />
+      <div className={"input-container"}>
+        <input className={"input-button"} type="button" onClick={onButtonClick} value={"Log in"} />
       </div>
     </div>
   );

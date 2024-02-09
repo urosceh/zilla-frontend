@@ -1,0 +1,49 @@
+.main-container {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.title-container {
+  display: flex;
+  flex-direction: column;
+  font-size: 64px;
+  font-weight: bolder;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  color: var(--dark-text-color);
+}
+
+.input-container > .login-error-label {
+  color: var(--error-color);
+  font-size: 12px;
+}
+
+.input-box {
+  height: 48px;
+  width: 400px;
+  font-size: large;
+  border-radius: 8px;
+  border: 1px solid var(--modal-color);
+  padding-left: 8px;
+}
+
+.input-button {
+  height: 48px;
+  width: 400px;
+  font-size: large;
+  border-radius: 8px;
+  border: 1px solid var(--modal-color);
+  background-color: var(--selected);
+  color: white;
+  margin-top: 16px;
+}

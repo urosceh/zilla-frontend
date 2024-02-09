@@ -1,0 +1,43 @@
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-container label {
+  margin-right: 10px; /* Add spacing between icon and input */
+}
+
+.search-container input {
+  padding: 8px 10px; /* Add padding to input */
+  border: 1px solid var(--dark-background-color); /* Add border */
+  border-radius: 4px; /* Add border radius */
+  background-color: var(--background-color); /* Set background color */
+  color: var(--text-color); /* Set text color */
+  transition: border-color 0.3s ease; /* Smooth transition for border color */
+}
+
+.search-container input:focus {
+  outline: none; /* Remove default focus outline */
+  border-color: var(--selected); /* Change border color on focus */
+}
+
+.search-container {
+  position: relative;
+}
+
+.search-wrapper {
+  position: relative;
+}
+
+.search-wrapper button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0 10px;
+  border: none;
+  background-color: transparent;
+  color: #fff; /* Adjust color as needed */
+  cursor: pointer;
+}
