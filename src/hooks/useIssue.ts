@@ -1,4 +1,5 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
+import {IIssueDto} from "../entities/Issue";
 import {AxiosClient} from "../lib/AxiosClient";
 
 export const useIssue = () => {
@@ -17,15 +18,19 @@ export const useIssue = () => {
   };
 };
 
-export const useGetIssue = () => {
+export const useGetIssue = (): {
+  issue: IIssueDto | null;
+  getIssue: ({issueId, projectKey}: {issueId: string; projectKey: string}) => Promise<void>;
+  isLoading: boolean;
+} => {
   const axiosInstance = AxiosClient.getInstance();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [issue, setIssue] = useState(undefined);
+  const [issue, setIssue] = useState<IIssueDto | null>(null);
 
   const getIssue = async ({issueId, projectKey}: {issueId: string; projectKey: string}) => {
     setIsLoading(true);
-    const issue = await axiosInstance.getIssue(projectKey, issueId);
+    const issue: IIssueDto = await axiosInstance.getIssue(projectKey, issueId);
 
     setIssue(issue);
     setIsLoading(false);

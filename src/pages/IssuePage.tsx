@@ -1,5 +1,6 @@
 import {useEffect} from "react";
 import {useParams} from "react-router";
+import IssueComponent from "../components/IssueComponent/IssueComponent";
 import {useGetIssue} from "../hooks/useIssue";
 
 const IssuePage = () => {
@@ -17,10 +18,10 @@ const IssuePage = () => {
   }, [issueId, projectKey]);
 
   return (
-    <>
+    <div className="issue-page-container">
       {isLoading && <h2>Loading</h2>}
-      {!isLoading && issue && <h2>{(issue as any).summary}</h2>}
-    </>
+      {!isLoading && issue && <IssueComponent issue={issue} />}
+    </div>
   );
 };
 
