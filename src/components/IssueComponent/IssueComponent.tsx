@@ -28,8 +28,11 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
     {userId: "3", email: "jo.doe@gmail.com", firstName: "Jo", lastName: "Doe"},
   ];
 
-  const handleSummaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSummary(e.target.value);
+  const handleSummaryChange = () => {
+    const doc: any = document.getElementById("summary-input");
+    if (doc) {
+      setSummary(doc.value);
+    }
     setIsSummaryEditable(false);
   };
 
@@ -38,8 +41,11 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
     setIsSummaryEditable(false);
   };
 
-  const handleDetailsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDetails(e.target.value);
+  const handleDetailsChange = () => {
+    const doc: any = document.getElementById("details-textarea");
+    if (doc) {
+      setDetails(doc.value);
+    }
     setIsDetailsEditable(false);
   };
 
@@ -66,10 +72,11 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
 
   return (
     <div className="issue-details">
-      <div className="left-section">
-        <div className="editable-container">
+      <div className="issue-left-section">
+        <div className="issue-editable-container">
           <input
             type="text"
+            id="summary-input"
             className={`summary ${isSummaryEditable ? "editable" : ""}`}
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
@@ -77,40 +84,42 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
             onDoubleClick={() => setIsSummaryEditable(true)}
           />
           {isSummaryEditable && (
-            <div className="editable-buttons">
-              <button className="editable-button" onClick={() => setIsSummaryEditable(false)}>
+            <div className="issue-editable-buttons">
+              <button className="issue-editable-button" onClick={handleSummaryChange}>
                 &#x2714; {/* Checkmark Unicode character */}
               </button>
-              <button className="editable-button" onClick={handleSummaryCancel}>
+              <button className="issue-editable-button" onClick={handleSummaryCancel}>
                 &#x2716; {/* Cross Unicode character */}
               </button>
             </div>
           )}
         </div>
-        <div className="editable-container">
+        <div className="issue-editable-container">
           <textarea
             className={`details ${isDetailsEditable ? "editable" : ""}`}
+            id="details-textarea"
             value={details}
             onChange={(e) => setDetails(e.target.value)}
             readOnly={!isDetailsEditable}
             onDoubleClick={() => setIsDetailsEditable(true)}
+            onSubmit={handleDetailsChange}
           />
           {isDetailsEditable && (
-            <div className="editable-buttons">
-              <button className="editable-button" onClick={() => setIsDetailsEditable(false)}>
+            <div className="issue-editable-buttons">
+              <button className="issue-editable-button" onClick={handleDetailsChange}>
                 &#x2714; {/* Checkmark Unicode character */}
               </button>
-              <button className="editable-button" onClick={handleDetailsCancel}>
+              <button className="issue-editable-button" onClick={handleDetailsCancel}>
                 &#x2716; {/* Cross Unicode character */}
               </button>
             </div>
           )}
         </div>
       </div>
-      <div className="right-section">
-        <div className="bordered-box">
-          <p>
-            <span className="label-dropdown">Issue Status:</span>
+      <div className="issue-right-section">
+        <div className="issue-bordered-box">
+          <p className="issue-label-dropdown">
+            <span>Issue Status:</span>
             {isIssueStatusEditable ? (
               <select value={selectedIssueStatus} onChange={handleIssueStatusChange}>
                 {issueStatusOptions.map((option) => (
@@ -120,11 +129,13 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
                 ))}
               </select>
             ) : (
-              <span onDoubleClick={() => setIsIssueStatusEditable(true)}>{selectedIssueStatus}</span>
+              <span className="issue-label-dropdown-button" onDoubleClick={() => setIsIssueStatusEditable(true)}>
+                {selectedIssueStatus}
+              </span>
             )}
           </p>
-          <p>
-            <span className="label-dropdown">Assignee:</span>
+          <p className="issue-label-dropdown">
+            <span>Assignee:</span>
             {isAssigneeEditable ? (
               <select value={selectedAssignee.userId} onChange={handleAssigneeChange}>
                 {users.map((user: IUserDto) => (
@@ -134,15 +145,17 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
                 ))}
               </select>
             ) : (
-              <span onDoubleClick={() => setIsAssigneeEditable(true)}>{selectedAssignee.email}</span>
+              <span className="issue-label-dropdown-button" onDoubleClick={() => setIsAssigneeEditable(true)}>
+                {selectedAssignee.email}
+              </span>
             )}
           </p>
-          <p>
-            <span className="label">Reporter:</span>
+          <p className="issue-label">
+            <span>Reporter:</span>
             <span>{issue.reporter.email}</span>
           </p>
-          <p>
-            <span className="label-dropdown">Sprint:</span>
+          <p className="issue-label-dropdown">
+            <span>Sprint:</span>
             {isSprintEditable ? (
               <select value={selectedSprint} onChange={handleSprintChange}>
                 {sprintOptions.map((option) => (
@@ -152,15 +165,19 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
                 ))}
               </select>
             ) : (
-              <span onDoubleClick={() => setIsSprintEditable(true)}>{selectedSprint}</span>
+              <span className="issue-label-dropdown-button" onDoubleClick={() => setIsSprintEditable(true)}>
+                {selectedSprint}
+              </span>
             )}
           </p>
-          <p>
-            <span className="label-timestamp">Created:</span> <span className="small-font">{issue.createdAt}</span>
-          </p>
-          <p>
-            <span className="label-timestamp">Updated:</span> <span className="small-font">{issue.updatedAt}</span>
-          </p>
+          <div className="issue-label-timestamp">
+            <p>
+              <span>Created:</span> <span className="small-font">{issue.createdAt}</span>
+            </p>
+            <p>
+              <span>Updated:</span> <span className="small-font">{issue.updatedAt}</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
