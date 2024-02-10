@@ -1,9 +1,13 @@
-import {Dispatch, SetStateAction, useState} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {AxiosClient} from "../../lib/AxiosClient";
 import "./LoginComponent.css";
 
-const Login = (props: {setLoggedIn: Dispatch<SetStateAction<boolean>>}) => {
+interface Props {
+  setLoggedIn: Dispatch<SetStateAction<boolean>>;
+}
+
+const LoginComponent: React.FC<Props> = ({setLoggedIn}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -38,18 +42,18 @@ const Login = (props: {setLoggedIn: Dispatch<SetStateAction<boolean>>}) => {
       return;
     }
 
-    console.log("Email: " + email);
-    console.log("Password" + password);
-
-    logIn();
+    login();
   };
 
   // Log in a user using email and password
-  const logIn = () => {
+  const login = () => {
     axiosInstance
       .login(email, password)
-      .then(() => {
-        props.setLoggedIn(true);
+      .then((response) => {
+        setLoggedIn(true);
+        if (response.adminBearerToken && response.adminBearerToken === response.bearerToken) {
+          // add to cookie
+        }
         navigate("/");
       })
       .catch((error) => {
@@ -85,4 +89,4 @@ const Login = (props: {setLoggedIn: Dispatch<SetStateAction<boolean>>}) => {
   );
 };
 
-export default Login;
+export default LoginComponent;

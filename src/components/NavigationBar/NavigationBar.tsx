@@ -26,10 +26,14 @@ const NavigationBar = () => {
     <div className="navigation-bar">
       <div className="left-section">
         <div className="dropdown navigation-item">
-          <button className="dropdown-button">Projects</button>
+          <Link className="dropdown-button" to="/">
+            Projects
+          </Link>
           <div className="dropdown-content">
             {projects.map((project) => (
-              <Link to={`/${project.projectKey}/issues`}>{project.projectName}</Link>
+              <Link key={project.projectId} to={`/${project.projectKey}/issues`}>
+                {project.projectName}
+              </Link>
             ))}
           </div>
         </div>
