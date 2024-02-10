@@ -21,10 +21,8 @@ export class AxiosClient {
     return this._instance;
   }
 
-  public async login(email: string, password: string): Promise<void> {
+  public async login(email: string, password: string): Promise<{bearerToken: string; adminBearerToken?: string}> {
     const response = await this._client.post("/user/login", {email, password});
-
-    console.log(response);
 
     this._client.defaults.headers.common["Authorization"] = response.data.bearerToken;
 
@@ -32,9 +30,36 @@ export class AxiosClient {
     // document.cookie = `bearerToken=${response.data.bearerToken}; path=/`;
     localStorage.setItem("bearerToken", response.data.bearerToken);
 
-    const projects = await this.getAllUserProjects();
+    // if (response.data.adminBearerToken && response.data.adminBearerToken === response.data.bearerToken) {
+    //   Cookies.set("adminBearerToken", response.data.adminBearerToken);
+    // }
 
-    console.log(projects);
+    return response.data;
+  }
+
+  public async getAllUsers(projectKey?: string): Promise<any> {
+    try {
+      const params = {
+        limit: 50,
+        offset: 0,
+      };
+
+      if (projectKey) {
+        Object.assign(params, {projectKey});
+      }
+
+      const response = await this._client.get("/user/all", {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: localStorage.getItem("bearerToken"),
+        },
+        params,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   public async getAllUserProjects(): Promise<any> {
@@ -112,6 +137,21 @@ export class AxiosClient {
   public async getSprints(projectKey: string): Promise<any> {
     try {
       const response = await this._client.get(`/sprint/${projectKey}`, {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: localStorage.getItem("bearerToken"),
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getIssueStatuses(): Promise<string[]> {
+    try {
+      const response = await this._client.get("/issue-status/", {
         headers: {
           ...this._client.defaults.headers.common,
           Authorization: localStorage.getItem("bearerToken"),
