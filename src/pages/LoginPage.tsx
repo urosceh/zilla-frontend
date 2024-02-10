@@ -1,8 +1,12 @@
 import {Dispatch, SetStateAction} from "react";
-import Login from "../components/LoginComponent/LoginComponent";
+import LoginComponent from "../components/LoginComponent/LoginComponent";
 
-const LoginPage = (props: {setLoggedIn: Dispatch<SetStateAction<boolean>>}) => {
-  return <Login setLoggedIn={props.setLoggedIn} />;
+interface Props {
+  setLoggedIn: Dispatch<SetStateAction<boolean>>;
+}
+
+const LoginPage: React.FC<Props> = ({setLoggedIn}) => {
+  return <LoginComponent setLoggedIn={setLoggedIn} />;
 };
 
 export default LoginPage;

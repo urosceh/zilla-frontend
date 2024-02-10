@@ -33,13 +33,6 @@
   display: inline-block;
 }
 
-.dropbtn {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--text-color);
-}
-
 .left-section .dropdown-content {
   display: none;
   margin-top: 10px;
@@ -50,6 +43,7 @@
   min-width: 160px;
   z-index: 1;
   padding: 3px;
+  border: 1px solid var(--dark-background-color);
 }
 
 .left-section .dropdown:hover .dropdown-content {
@@ -93,6 +87,7 @@
   background-color: var(--drop-down-color);
   min-width: 160px;
   z-index: 1;
+  border: 1px solid var(--dark-background-color);
 }
 
 .right-section .dropdown-content.active {

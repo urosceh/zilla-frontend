@@ -14,11 +14,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage setLoggedIn={setLoggedIn} />} />
-          {/* <Route path="/" element={loggedIn ? <ProjectsPage /> : <Navigate to={{pathname: "/login"}} />} /> */}
           <Route path="/" element={<ProjectsPage />} />
           <Route path="/:projectKey/issues" element={<AllProjectsIssuesPage />} />
           {/* <Route path="/:projectKey/kanban" element={<KanbanPage />} /> */}
           <Route path="/:projectKey/:issueId" element={<IssuePage />} />
+          {/* <Route path="/logout" element={<LogoutPage />} /> */}
         </Routes>
       </BrowserRouter>
     </div>
