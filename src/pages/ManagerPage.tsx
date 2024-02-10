@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import AccessManagementComponent from "../components/ManagerPanelComponent/ManagerPanelComponent";
+import ManagerPanelComponent from "../components/ManagerPanelComponent/ManagerPanelComponent";
 import NavigationBar from "../components/NavigationBar/NavigationBar";
 import {IUserDto} from "../entities/User";
 import {useUsers} from "../hooks/useUsers";
@@ -22,7 +22,7 @@ const ManagerPage = () => {
         setProjectUsers(allProjectUsers);
         getAllUsers().then((allUsers) => {
           console.log({allProjectUsers, allUsers});
-          const nonProjectUsers = allUsers.filter((user) => !projectUsers.find((projectUser) => projectUser.userId === user.userId));
+          const nonProjectUsers = allUsers.filter((user) => !allProjectUsers.find((projectUser) => projectUser.userId === user.userId));
           setNonProjectUsers(nonProjectUsers);
           setIsLoading(false);
         });
@@ -37,7 +37,7 @@ const ManagerPage = () => {
       ) : (
         <div>
           <NavigationBar />
-          <AccessManagementComponent projectUsers={projectUsers} nonProjectUsers={nonProjectUsers} />
+          <ManagerPanelComponent projectUsers={projectUsers} nonProjectUsers={nonProjectUsers} />
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 import axios, {AxiosInstance} from "axios";
 import {IIssueCreate, IIssueDto, IIssueSearchOptions, IIssueUpdate} from "../entities/Issue";
-import {IUserDto} from "../entities/User";
 import {CreateSprint} from "../entities/Sprint";
+import {IUserDto} from "../entities/User";
 
 export class AxiosClient {
   private static _instance: AxiosClient;
@@ -219,6 +219,37 @@ export class AxiosClient {
       });
 
       return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async giveAccess(projectKey: string, userIds: string[]): Promise<void> {
+    try {
+      await this._client.post(
+        "/access",
+        {userIds, projectKey},
+        {
+          headers: {
+            ...this._client.defaults.headers.common,
+            Authorization: localStorage.getItem("bearerToken"),
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async removeAccess(projectKey: string, userIds: string[]): Promise<void> {
+    try {
+      await this._client.delete("/access", {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: localStorage.getItem("bearerToken"),
+        },
+        data: {userIds, projectKey},
+      });
     } catch (error) {
       throw error;
     }
