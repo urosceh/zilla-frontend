@@ -1,5 +1,7 @@
 import axios, {AxiosInstance} from "axios";
 import {IIssueCreate, IIssueDto, IIssueSearchOptions, IIssueUpdate} from "../entities/Issue";
+import {IUserDto} from "../entities/User";
+import {CreateSprint} from "../entities/Sprint";
 
 export class AxiosClient {
   private static _instance: AxiosClient;
@@ -38,7 +40,7 @@ export class AxiosClient {
     return response.data;
   }
 
-  public async getAllUsers(projectKey?: string): Promise<any> {
+  public async getAllUsers(projectKey?: string): Promise<IUserDto[]> {
     try {
       const params = {
         limit: 50,
@@ -59,7 +61,7 @@ export class AxiosClient {
 
       return response.data;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   }
 
@@ -180,6 +182,21 @@ export class AxiosClient {
   public async getSprints(projectKey: string): Promise<any> {
     try {
       const response = await this._client.get(`/sprint/${projectKey}`, {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: localStorage.getItem("bearerToken"),
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async createSprint(sprint: CreateSprint): Promise<any> {
+    try {
+      const response = await this._client.post("/sprint", sprint, {
         headers: {
           ...this._client.defaults.headers.common,
           Authorization: localStorage.getItem("bearerToken"),

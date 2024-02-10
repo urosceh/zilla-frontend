@@ -21,7 +21,15 @@ const ProjectsTable = (props: {projects: IProjectDto[]}) => {
                 {project.projectName}
               </Link>
             </td>
-            <td className="table-cell">{project.projectKey}</td>
+            <td className="table-cell">
+              {project.isManager ? (
+                <Link to={`/manager/${project.projectKey}/panel`} className="manager-project-link">
+                  {project.projectKey}
+                </Link>
+              ) : (
+                project.projectKey
+              )}
+            </td>
             <td className="table-cell">{`${project.manager.firstName} ${project.manager.lastName}`}</td>
             <td className="table-cell">{project.manager.email}</td>
           </tr>

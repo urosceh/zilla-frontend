@@ -5,3 +5,5 @@ export interface ISprintDto {
   startOfSprint: string;
   endOfSprint: string;
 }
+
+export type CreateSprint = Omit<ISprintDto, "sprintId">;

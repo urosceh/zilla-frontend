@@ -20,7 +20,7 @@
 }
 
 .navigation-item:hover {
-  background-color: var(--selected);
+  background-color: var(--selected-color);
 }
 
 .navigation-item > a {
@@ -75,7 +75,7 @@
 }
 
 .cog:hover {
-  background-color: var(--selected);
+  background-color: var(--selected-color);
 }
 
 .right-section .dropdown-content {

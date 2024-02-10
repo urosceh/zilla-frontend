@@ -4,6 +4,7 @@ import "./App.css";
 import AllProjectsIssuesPage from "./pages/AllProjectIssuesPage";
 import IssuePage from "./pages/IssuePage";
 import LoginPage from "./pages/LoginPage";
+import ManagerPage from "./pages/ManagerPage";
 import ProjectsPage from "./pages/ProjectsPage";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<ProjectsPage />} />
           <Route path="/:projectKey/issues" element={<AllProjectsIssuesPage />} />
           {/* <Route path="/:projectKey/kanban" element={<KanbanPage />} /> */}
+          <Route path="/manager/:projectKey/panel" element={<ManagerPage />} />
           <Route path="/:projectKey/:issueId" element={<IssuePage />} />
           {/* <Route path="/logout" element={<LogoutPage />} /> */}
         </Routes>

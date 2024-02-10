@@ -25,7 +25,17 @@
   text-align: left;
 }
 
-.table-cell > a {
-  color: var(--selected);
+.table-cell:has(.manager-project-link):hover {
+  background-color: var(--dark-background-color);
+}
+
+.project-link {
   text-decoration: underline;
+  color: var(--selected-color);
+}
+
+.manager-project-link {
+  text-decoration: double;
+  color: inherit;
+  transition: background-color 0.3s ease;
 }
