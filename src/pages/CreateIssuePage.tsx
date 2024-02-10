@@ -1,12 +1,11 @@
+import IssueCreateComponent from "../components/IssueCreateComponent/IssueCreateComponent";
 import NavigationBar from "../components/NavigationBar/NavigationBar";
 
 const CreateIssuePage = () => {
   return (
     <div>
       <NavigationBar />
-      <div className="create-issue-form">
-        <h2>Smth</h2>
-      </div>
+      <IssueCreateComponent />
     </div>
   );
 };

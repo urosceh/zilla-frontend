@@ -2,6 +2,7 @@ import {useState} from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import "./App.css";
 import AllProjectsIssuesPage from "./pages/AllProjectIssuesPage";
+import CreateIssuePage from "./pages/CreateIssuePage";
 import IssuePage from "./pages/IssuePage";
 import LoginPage from "./pages/LoginPage";
 import ManagerPage from "./pages/ManagerPage";
@@ -18,8 +19,9 @@ function App() {
           <Route path="/" element={<ProjectsPage />} />
           <Route path="/:projectKey/issues" element={<AllProjectsIssuesPage />} />
           {/* <Route path="/:projectKey/kanban" element={<KanbanPage />} /> */}
-          <Route path="/manager/:projectKey/panel" element={<ManagerPage />} />
+          <Route path="/:projectKey/new" element={<CreateIssuePage />} />
           <Route path="/:projectKey/:issueId" element={<IssuePage />} />
+          <Route path="/manager/:projectKey/panel" element={<ManagerPage />} />
           {/* <Route path="/logout" element={<LogoutPage />} /> */}
         </Routes>
       </BrowserRouter>

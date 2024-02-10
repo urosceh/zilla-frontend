@@ -17,7 +17,6 @@ export interface IIssueDto {
 
 export interface IIssueCreate {
   projectKey: string;
-  reporterId: string;
   issueStatus: string;
   summary: string;
   assigneeId: string | null;

@@ -40,9 +40,9 @@ const NavigationBar = () => {
         {/* <div className="navigation-item">
           <Link to="/">Sprint</Link>
         </div> */}
-        {/* <div className="navigation-item">
-          create issue
-        </div> */}
+        <div className="create-issue-navigation-item">
+          <Link to={`/${projectKey}/new`}>+</Link>
+        </div>
       </div>
 
       <div className="right-section">
