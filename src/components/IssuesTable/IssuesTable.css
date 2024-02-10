@@ -34,6 +34,6 @@
 }
 
 .summary-cell a {
-  color: var(--selected);
+  color: var(--selected-color);
   text-decoration: underline;
 }

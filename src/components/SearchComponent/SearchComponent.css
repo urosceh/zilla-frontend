@@ -18,7 +18,7 @@
 
 .search-container input:focus {
   outline: none;
-  border-color: var(--selected);
+  border-color: var(--selected-color);
 }
 
 .search-container {
