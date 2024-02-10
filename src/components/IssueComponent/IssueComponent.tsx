@@ -140,10 +140,10 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
           {isSummaryEditable && (
             <div className="issue-editable-buttons">
               <button className="issue-editable-button" onClick={handleSummaryChange}>
-                &#x2714; {/* Checkmark Unicode character */}
+                &#x2714;
               </button>
               <button className="issue-editable-button" onClick={handleSummaryCancel}>
-                &#x2716; {/* Cross Unicode character */}
+                &#x2716;
               </button>
             </div>
           )}
@@ -162,10 +162,10 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
           {isDetailsEditable && (
             <div className="issue-editable-buttons">
               <button className="issue-editable-button" onClick={handleDetailsChange}>
-                &#x2714; {/* Checkmark Unicode character */}
+                &#x2714;
               </button>
               <button className="issue-editable-button" onClick={handleDetailsCancel}>
-                &#x2716; {/* Cross Unicode character */}
+                &#x2716;
               </button>
             </div>
           )}

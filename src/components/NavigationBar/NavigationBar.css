@@ -7,6 +7,8 @@
   color: var(--text-color);
 }
 
+/* Left Section */
+
 .left-section {
   display: flex;
   align-items: center;
@@ -17,6 +19,7 @@
   margin-right: 20px;
   cursor: pointer;
   padding: 10px 20px;
+  border-radius: 10px;
 }
 
 .navigation-item:hover {
@@ -62,6 +65,19 @@
   cursor: pointer;
 }
 
+.create-issue-navigation-item {
+  color: var(--text-color);
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.create-issue-navigation-item:hover {
+  background-color: var(--selected-color);
+}
+
+/* Right Section */
+
 .right-section {
   display: flex;
   align-items: center;
@@ -72,6 +88,7 @@
   cursor: pointer;
   margin-left: 10px;
   padding: 10px 20px;
+  border-radius: 10px;
 }
 
 .cog:hover {
