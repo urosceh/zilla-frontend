@@ -1,20 +1,53 @@
 import {useState} from "react";
-import {IIssueDto} from "../entities/Issue";
+import {IIssueCreate, IIssueDto, IIssueUpdate} from "../entities/Issue";
 import {AxiosClient} from "../lib/AxiosClient";
 
-export const useIssue = () => {
+export const useCreateIssue: () => {
+  issueId: string;
+  createIssue: (createIssue: IIssueCreate) => Promise<void>;
+  isLoading: boolean;
+} = () => {
   const axiosInstance = AxiosClient.getInstance();
 
+  const [issueId, setIssueId] = useState<string>(null as any);
   const [isLoading, setIsLoading] = useState(false);
 
-  const createIssue = async () => {};
-  const deleteIssue = async () => {};
-  const updateIssue = async () => {};
+  const createIssue = async (createIssue: IIssueCreate) => {
+    setIsLoading(true);
+
+    const issueId: string = await axiosInstance.createIssue(createIssue);
+
+    setIssueId(issueId);
+    setIsLoading(false);
+  };
 
   return {
+    issueId,
     createIssue,
-    deleteIssue,
+    isLoading,
+  };
+};
+
+export const useUpdateIssue: () => {
+  updateIssue: (updateIssue: IIssueUpdate) => Promise<IIssueDto>;
+  isLoading: boolean;
+} = () => {
+  const axiosInstance = AxiosClient.getInstance();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const updateIssue = async (updateIssue: IIssueUpdate) => {
+    setIsLoading(true);
+
+    const issue: IIssueDto = await axiosInstance.updateIssue(updateIssue);
+
+    setIsLoading(false);
+
+    return issue;
+  };
+
+  return {
     updateIssue,
+    isLoading,
   };
 };
 

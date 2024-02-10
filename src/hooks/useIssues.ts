@@ -1,27 +1,25 @@
 import {useState} from "react";
+import {IIssueDto, IIssueSearchOptions} from "../entities/Issue";
 import {AxiosClient} from "../lib/AxiosClient";
 
-export const useGetAllIssues = () => {
+export const useGetAllIssues: () => {
+  getAllIssues: (projectKey: string, options?: IIssueSearchOptions) => Promise<IIssueDto[]>;
+  isLoading: boolean;
+} = () => {
   const axiosInstance = AxiosClient.getInstance();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [issues, setIssues] = useState(undefined);
 
-  const getAllIssues = async (projectKey: string) => {
-    try {
-      setIsLoading(true);
-      const issues = await axiosInstance.getAllProjectIssues(projectKey);
+  const getAllIssues = async (projectKey: string, options?: IIssueSearchOptions) => {
+    setIsLoading(true);
+    const issues = await axiosInstance.getAllProjectIssues(projectKey, options);
 
-      setIssues(issues);
-      setIsLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
+    setIsLoading(false);
+    return issues;
   };
 
   return {
     getAllIssues,
-    issues,
     isLoading,
   };
 };

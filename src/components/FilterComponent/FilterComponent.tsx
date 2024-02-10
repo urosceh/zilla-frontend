@@ -1,13 +1,59 @@
-import {useState} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
+import {ISprintDto} from "../../entities/Sprint";
 import {IUserDto} from "../../entities/User";
 import "./FilterComponent.css";
 
-const FilterComponent = (props: {users: IUserDto[]; issueStatuses: string[]; sprints: {sprintId: number; sprintName: string}[]}) => {
+interface Props {
+  users: IUserDto[];
+  issueStatuses: string[];
+  sprints: ISprintDto[];
+  getters: {
+    selectedAssignees: string[];
+    selectedReporters: string[];
+    selectedSprints: number[];
+    selectedStatuses: string[];
+  };
+  setters: {
+    setSelectedAssignees: Dispatch<SetStateAction<string[]>>;
+    setSelectedReporters: Dispatch<SetStateAction<string[]>>;
+    setSelectedSprints: Dispatch<SetStateAction<number[]>>;
+    setSelectedStatuses: Dispatch<SetStateAction<string[]>>;
+  };
+}
+
+const FilterComponent: React.FC<Props> = ({
+  users,
+  issueStatuses,
+  sprints,
+  setters: {setSelectedAssignees, setSelectedReporters, setSelectedSprints, setSelectedStatuses},
+  getters: {selectedAssignees, selectedReporters, selectedSprints, selectedStatuses},
+}) => {
   const [openFilter, setOpenFilter] = useState<string | null>(null);
-  const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
-  const [selectedReporters, setSelectedReporters] = useState<string[]>([]);
-  const [selectedSprints, setSelectedSprints] = useState<number[]>([]);
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+
+  const orderedAssignees = [...users].sort((a, b) => {
+    if (selectedAssignees.includes(a.userId) && selectedAssignees.includes(b.userId)) return 0;
+    if (selectedAssignees.includes(a.userId)) return -1;
+    if (selectedAssignees.includes(b.userId)) return 1;
+    return 0;
+  });
+  const orderedReporters = [...users].sort((a, b) => {
+    if (selectedReporters.includes(a.userId) && selectedReporters.includes(b.userId)) return 0;
+    if (selectedReporters.includes(a.userId)) return -1;
+    if (selectedReporters.includes(b.userId)) return 1;
+    return 0;
+  });
+  const orderedSprints = [...sprints].sort((a, b) => {
+    if (selectedSprints.includes(a.sprintId) && selectedSprints.includes(b.sprintId)) return 0;
+    if (selectedSprints.includes(a.sprintId)) return -1;
+    if (selectedSprints.includes(b.sprintId)) return 1;
+    return 0;
+  });
+  const orderedStatuses = [...issueStatuses].sort((a, b) => {
+    if (selectedStatuses.includes(a) && selectedStatuses.includes(b)) return 0;
+    if (selectedStatuses.includes(a)) return -1;
+    if (selectedStatuses.includes(b)) return 1;
+    return 0;
+  });
 
   const handleFilterClick = (filterName: string) => {
     setOpenFilter((prevFilter) => (prevFilter === filterName ? null : filterName));
@@ -45,7 +91,7 @@ const FilterComponent = (props: {users: IUserDto[]; issueStatuses: string[]; spr
         </label>
         {openFilter === "assignee" && (
           <div className={`filter-dropdown-input ${openFilter === "assignee" ? "active" : ""}`}>
-            {props.users.map((user) => (
+            {orderedAssignees.map((user) => (
               <label key={user.userId}>
                 <input
                   type="checkbox"
@@ -66,7 +112,7 @@ const FilterComponent = (props: {users: IUserDto[]; issueStatuses: string[]; spr
         </label>
         {openFilter === "reporter" && (
           <div className={`filter-dropdown-input ${openFilter === "reporter" ? "active" : ""}`}>
-            {props.users.map((user) => (
+            {orderedReporters.map((user) => (
               <label key={user.userId}>
                 <input
                   type="checkbox"
@@ -87,7 +133,7 @@ const FilterComponent = (props: {users: IUserDto[]; issueStatuses: string[]; spr
         </label>
         {openFilter === "sprint" && (
           <div className={`filter-dropdown-input ${openFilter === "sprint" ? "active" : ""}`}>
-            {props.sprints.map((sprint) => (
+            {orderedSprints.map((sprint) => (
               <label key={sprint.sprintId}>
                 <input
                   type="checkbox"
@@ -108,7 +154,7 @@ const FilterComponent = (props: {users: IUserDto[]; issueStatuses: string[]; spr
         </label>
         {openFilter === "status" && (
           <div className={`filter-dropdown-input ${openFilter === "status" ? "active" : ""}`}>
-            {props.issueStatuses.map((status) => (
+            {orderedStatuses.map((status) => (
               <label key={status}>
                 <input
                   type="checkbox"

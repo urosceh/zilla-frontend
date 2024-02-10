@@ -14,6 +14,19 @@
 .issue-editable-container {
   width: 100%;
   min-width: 600px;
+  position: relative;
+}
+
+.issue-editable-buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row; /* Arrange buttons horizontally */
+}
+
+.issue-editable-button {
+  margin: 0 5px 5px 0; /* Add some space between buttons */
 }
 
 .issue-editable-container > input {
@@ -27,7 +40,6 @@
 .issue-editable-container > textarea {
   width: 100%;
   min-height: 250px;
-  margin-top: 30px;
   padding: 5px;
   border: 1px solid var(--dark-background-color);
   background-color: var(--modal-color);
@@ -67,6 +79,13 @@
 .issue-label-dropdown > .issue-label-dropdown-button:hover {
   background-color: var(--dark-text-color);
   cursor: pointer;
+}
+
+.issue-label-dropdown select {
+  padding: 5px;
+  margin: 5px;
+  background-color: var(--dark-background-color);
+  color: var(--text-color);
 }
 
 .issue-label {

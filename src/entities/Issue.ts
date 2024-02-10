@@ -1,3 +1,5 @@
+import {IPaginatable} from "../interfaces/IPaginatable";
+import {ISprintDto} from "./Sprint";
 import {IUserDto} from "./User";
 
 export interface IIssueDto {
@@ -10,41 +12,32 @@ export interface IIssueDto {
   details: string | null;
   createdAt: string;
   updatedAt: string;
+  sprint: ISprintDto | null;
 }
 
-export class Issue {
-  public issueId: string;
-  public projectKey: string;
-  public reporter: IUserDto;
-  public assignee: IUserDto | null | undefined;
-  public issueStatus: string;
-  public summary: string;
-  public details: string | null;
-  public createdAt: string;
-  public updatedAt: string;
+export interface IIssueCreate {
+  projectKey: string;
+  reporterId: string;
+  issueStatus: string;
+  summary: string;
+  assigneeId: string | null;
+  details: string | null;
+  sprintId: number | null;
+}
 
-  constructor(issue: IIssueDto) {
-    if (
-      !issue ||
-      !issue.issueId ||
-      !issue.projectKey ||
-      !issue.reporter ||
-      !issue.issueStatus ||
-      !issue.summary ||
-      !issue.createdAt ||
-      !issue.updatedAt
-    ) {
-      throw new Error("Invalid issue");
-    }
+export interface IIssueUpdate {
+  issueId: string;
+  projectKey: string;
+  issueStatus?: string;
+  summary?: string;
+  assigneeId?: string | null;
+  details?: string | null;
+  sprintId?: number | null;
+}
 
-    this.issueId = issue.issueId;
-    this.projectKey = issue.projectKey;
-    this.reporter = issue.reporter;
-    this.assignee = issue.assignee;
-    this.issueStatus = issue.issueStatus;
-    this.summary = issue.summary;
-    this.details = issue.details;
-    this.createdAt = issue.createdAt;
-    this.updatedAt = issue.updatedAt;
-  }
+export interface IIssueSearchOptions extends IPaginatable {
+  asigneeIds?: string[];
+  reporterIds?: string[];
+  sprintIds?: number[];
+  issueStatuses?: string[];
 }

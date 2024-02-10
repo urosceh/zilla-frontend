@@ -1,28 +1,28 @@
 .projects-table {
   width: 100%;
-  margin: auto; /* Add margin for spacing from top */
+  margin: auto;
   background-color: var(--background-color);
   color: var(--text-color);
-  border-top: 1px solid var(--modal-color); /* Add thin line above table */
-  border-bottom: 1px solid var(--modal-color); /* Add thin line below table */
+  border-top: 1px solid var(--modal-color);
+  border-bottom: 1px solid var(--modal-color);
   border-collapse: collapse; /* Merge cell borders */
 }
 
 .table-header {
-  background-color: var(--background-color); /* Set background color to match page background */
-  color: var(--text-color); /* Set text color to match page text color */
-  padding: 16px; /* Add padding to top and bottom */
-  text-align: left; /* Align text to the left */
-  border-bottom: 1px solid var(--modal-color); /* Add thin line below header */
+  background-color: var(--background-color);
+  color: var(--text-color);
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--modal-color);
 }
 
 .table-row {
-  border-bottom: 1px solid var(--modal-color); /* Add thin line below each row */
+  border-bottom: 1px solid var(--modal-color);
 }
 
 .table-cell {
   padding: 16px;
-  text-align: left; /* Align text to the left */
+  text-align: left;
 }
 
 .table-cell > a {

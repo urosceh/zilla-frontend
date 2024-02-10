@@ -1,12 +1,25 @@
-import {useState} from "react";
-import {IIssueDto} from "../../entities/Issue";
+import {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import {IIssueDto, IIssueUpdate} from "../../entities/Issue";
+import {ISprintDto} from "../../entities/Sprint";
 import {IUserDto} from "../../entities/User";
+import {useUpdateIssue} from "../../hooks/useIssue";
+import {useGetIssueStatuses} from "../../hooks/useIssueStatus";
+import {useGetSprints} from "../../hooks/useSprint";
+import {useUsers} from "../../hooks/useUsers";
 import "./IssueComponent.css";
 interface Props {
   issue: IIssueDto;
 }
 
 const IssueComponent: React.FC<Props> = ({issue}) => {
+  const params = useParams();
+  const projectKey = params.projectKey as string;
+  const issueId = params.issueId as string;
+
+  const undefinedSprint = {sprintId: "", sprintName: "No sprint"} as any;
+  const undefinedAssignee = {userId: "", email: "No Assignee"} as any;
+
   const [isSummaryEditable, setIsSummaryEditable] = useState(false);
   const [isDetailsEditable, setIsDetailsEditable] = useState(false);
   const [isAssigneeEditable, setIsAssigneeEditable] = useState(false);
@@ -14,24 +27,48 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
   const [isSprintEditable, setIsSprintEditable] = useState(false);
 
   const [selectedIssueStatus, setSelectedIssueStatus] = useState(issue.issueStatus);
-  const [selectedAssignee, setSelectedAssignee] = useState<IUserDto>(issue.assignee || ({userId: null, email: "Undefined"} as any));
-  const [selectedSprint, setSelectedSprint] = useState("Sprint 1"); // Replace with your actual sprint data
+  const [selectedAssignee, setSelectedAssignee] = useState<IUserDto>(issue.assignee || undefinedAssignee);
+  const [selectedSprint, setSelectedSprint] = useState<ISprintDto>(issue.sprint || undefinedSprint);
 
   const [summary, setSummary] = useState(issue.summary);
   const [details, setDetails] = useState(issue.details || "");
 
-  const issueStatusOptions = ["Open", "In Progress", "Resolved", "Closed"];
-  const sprintOptions = ["Sprint 1", "Sprint 2", "Sprint 3"]; // Replace with your actual sprint data
-  const users = [
-    {userId: "1", email: "john.doe@gmail.com", firstName: "John", lastName: "Doe"},
-    {userId: "2", email: "jane.doe@gmail.com", firstName: "Jane", lastName: "Doe"},
-    {userId: "3", email: "jo.doe@gmail.com", firstName: "Jo", lastName: "Doe"},
-  ];
+  const {sprints, getSprints} = useGetSprints(projectKey);
+  const {issueStatuses, getIssueStatuses} = useGetIssueStatuses();
+  const {users, getAllUsers} = useUsers();
+  const {updateIssue} = useUpdateIssue();
+
+  useEffect(() => {
+    getSprints();
+    getIssueStatuses();
+    getAllUsers(projectKey);
+  }, [issueId, projectKey]);
+
+  const updateIssueHandler = async (issueForUpdate: IIssueUpdate) => {
+    const updatedIssue = await updateIssue(issueForUpdate);
+
+    setSummary(updatedIssue.summary);
+    setSelectedIssueStatus(updatedIssue.issueStatus);
+    setDetails(updatedIssue.details || "");
+    const assignee = users.find((user) => user.userId === updatedIssue.assignee?.userId);
+    setSelectedAssignee(assignee || undefinedAssignee);
+    const sprint = sprints.find((sprint) => sprint.sprintId === updatedIssue.sprint?.sprintId);
+    setSelectedSprint(sprint || undefinedSprint);
+  };
 
   const handleSummaryChange = () => {
     const doc: any = document.getElementById("summary-input");
     if (doc) {
-      setSummary(doc.value);
+      const newSummary = doc.value;
+      if (newSummary === "") {
+        // If summary is empty, set it to the previous value
+        doc.value = issue.summary;
+      }
+      setSummary(newSummary);
+      updateIssueHandler({issueId, projectKey, summary: newSummary}).catch((error) => {
+        doc.value = issue.summary;
+        console.log("Error: " + error);
+      });
     }
     setIsSummaryEditable(false);
   };
@@ -45,6 +82,10 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
     const doc: any = document.getElementById("details-textarea");
     if (doc) {
       setDetails(doc.value);
+      updateIssueHandler({issueId, projectKey, details: doc.value}).catch((error) => {
+        doc.value = issue.details;
+        console.log("Error: " + error);
+      });
     }
     setIsDetailsEditable(false);
   };
@@ -57,17 +98,30 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
   const handleIssueStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedIssueStatus(e.target.value);
     setIsIssueStatusEditable(false);
+    updateIssueHandler({issueId, projectKey, issueStatus: e.target.value}).catch((error) => {
+      setSelectedIssueStatus(issue.issueStatus);
+      console.log("Error: " + error);
+    });
   };
 
   const handleAssigneeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const assignee = users.find((user) => user.userId === e.target.value);
-    setSelectedAssignee(assignee!);
+    const assignee = users.find((user) => user.userId === e.target.value) || undefinedAssignee;
+    setSelectedAssignee(assignee);
     setIsAssigneeEditable(false);
+    updateIssueHandler({issueId, projectKey, assigneeId: assignee.userId || null}).catch((error) => {
+      setSelectedAssignee(issue.assignee || undefinedAssignee);
+      console.log("Error: " + error);
+    });
   };
 
   const handleSprintChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSprint(e.target.value);
+    const sprint = sprints.find((sprint) => sprint.sprintName === e.target.value) || undefinedSprint;
+    setSelectedSprint(sprint);
     setIsSprintEditable(false);
+    updateIssueHandler({issueId, projectKey, sprintId: sprint.sprintId || null}).catch((error) => {
+      setSelectedSprint(issue.sprint || undefinedSprint);
+      console.log("Error: " + error);
+    });
   };
 
   return (
@@ -99,6 +153,7 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
             className={`details ${isDetailsEditable ? "editable" : ""}`}
             id="details-textarea"
             value={details}
+            placeholder="Add details..."
             onChange={(e) => setDetails(e.target.value)}
             readOnly={!isDetailsEditable}
             onDoubleClick={() => setIsDetailsEditable(true)}
@@ -122,9 +177,9 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
             <span>Issue Status:</span>
             {isIssueStatusEditable ? (
               <select value={selectedIssueStatus} onChange={handleIssueStatusChange}>
-                {issueStatusOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+                {issueStatuses.map((issueStatus) => (
+                  <option key={issueStatus} value={issueStatus}>
+                    {issueStatus}
                   </option>
                 ))}
               </select>
@@ -138,7 +193,7 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
             <span>Assignee:</span>
             {isAssigneeEditable ? (
               <select value={selectedAssignee.userId} onChange={handleAssigneeChange}>
-                {users.map((user: IUserDto) => (
+                {[undefinedAssignee, ...users].map((user: IUserDto) => (
                   <option key={user.userId} value={user.userId}>
                     {user.email}
                   </option>
@@ -157,16 +212,16 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
           <p className="issue-label-dropdown">
             <span>Sprint:</span>
             {isSprintEditable ? (
-              <select value={selectedSprint} onChange={handleSprintChange}>
-                {sprintOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+              <select value={selectedSprint?.sprintName || "No sprint"} onChange={handleSprintChange}>
+                {[undefinedSprint, ...sprints].map((sprint) => (
+                  <option key={sprint.sprintId} value={sprint.sprintName}>
+                    {sprint.sprintName}
                   </option>
                 ))}
               </select>
             ) : (
               <span className="issue-label-dropdown-button" onDoubleClick={() => setIsSprintEditable(true)}>
-                {selectedSprint}
+                {selectedSprint?.sprintName || "No sprint"}
               </span>
             )}
           </p>

@@ -1,4 +1,5 @@
 import axios, {AxiosInstance} from "axios";
+import {IIssueCreate, IIssueDto, IIssueSearchOptions, IIssueUpdate} from "../entities/Issue";
 
 export class AxiosClient {
   private static _instance: AxiosClient;
@@ -89,13 +90,55 @@ export class AxiosClient {
     return response.data;
   }
 
-  public async getAllProjectIssues(projectKey: string): Promise<any> {
+  public async createIssue(issue: IIssueCreate): Promise<string> {
     try {
+      const response = await this._client.post("/issue", issue, {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: localStorage.getItem("bearerToken"),
+        },
+      });
+
+      return response.data.issueId;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async updateIssue(issue: IIssueUpdate): Promise<IIssueDto> {
+    try {
+      const {issueId, projectKey, ...body} = issue;
+      const response = await this._client.patch(`/issue/${issue.issueId}`, body, {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: localStorage.getItem("bearerToken"),
+        },
+        params: {projectKey},
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getAllProjectIssues(projectKey: string, options?: IIssueSearchOptions): Promise<IIssueDto[]> {
+    try {
+      const params = {
+        orderCol: "updatedAt",
+        orderDir: "DESC",
+        limit: (options?.limit || 10) + 1,
+        offset: options?.offset || 0,
+        assigneeIds: options?.asigneeIds,
+        reporterIds: options?.reporterIds,
+        sprintIds: options?.sprintIds,
+      };
       const response = await this._client.get(`issue/project/${projectKey}`, {
         headers: {
           ...this._client.defaults.headers.common,
           Authorization: localStorage.getItem("bearerToken"),
         },
+        params,
       });
 
       return response.data;

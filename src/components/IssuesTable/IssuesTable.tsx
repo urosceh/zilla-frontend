@@ -1,8 +1,13 @@
+import React from "react";
 import {Link} from "react-router-dom";
 import {IIssueDto} from "../../entities/Issue";
 import "./IssuesTable.css";
 
-const IssuesTable = ({issues}: {issues: IIssueDto[]}) => {
+interface Props {
+  issues: IIssueDto[];
+}
+
+const IssuesTable: React.FC<Props> = ({issues}) => {
   return (
     <table className="issue-table">
       <thead>
