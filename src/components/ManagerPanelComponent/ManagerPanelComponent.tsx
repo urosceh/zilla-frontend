@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {useParams} from "react-router-dom";
 import {CreateSprint} from "../../entities/Sprint";
 import {IUserDto} from "../../entities/User";
+import {useAccess} from "../../hooks/useAccess";
 import {useCreteSprint} from "../../hooks/useSprint";
 import "./ManagerPanelComponent.css";
 
@@ -10,7 +11,7 @@ interface Props {
   nonProjectUsers: IUserDto[];
 }
 
-const AccessManagementComponent: React.FC<Props> = ({projectUsers, nonProjectUsers}) => {
+const ManagerPanelComponent: React.FC<Props> = ({projectUsers, nonProjectUsers}) => {
   const params = useParams();
   const projectKey = params.projectKey as string;
 
@@ -38,6 +39,26 @@ const AccessManagementComponent: React.FC<Props> = ({projectUsers, nonProjectUse
         return prevUsers.filter((u) => u.userId !== user.userId);
       }
       return [...prevUsers, user];
+    });
+  };
+
+  const {giveAccess, removeAccess} = useAccess();
+
+  const handleGiveAccess = () => {
+    giveAccess(
+      projectKey,
+      selectedNonProjectUsers.map((u) => u.userId)
+    ).then(() => {
+      window.location.reload();
+    });
+  };
+
+  const handleRemoveAccess = () => {
+    removeAccess(
+      projectKey,
+      selectedProjectUsers.map((u) => u.userId)
+    ).then(() => {
+      window.location.reload();
     });
   };
 
@@ -104,7 +125,7 @@ const AccessManagementComponent: React.FC<Props> = ({projectUsers, nonProjectUse
               })}
             </div>
             <div className="giving-access-button">
-              <button>Give Access</button>
+              <button onClick={handleGiveAccess}>Give Access</button>
             </div>
           </div>
         </div>
@@ -139,7 +160,7 @@ const AccessManagementComponent: React.FC<Props> = ({projectUsers, nonProjectUse
               })}
             </div>
             <div className="removing-access-button">
-              <button>Remove Access</button>
+              <button onClick={handleRemoveAccess}>Remove Access</button>
             </div>
           </div>
         </div>
@@ -174,4 +195,4 @@ const AccessManagementComponent: React.FC<Props> = ({projectUsers, nonProjectUse
   );
 };
 
-export default AccessManagementComponent;
+export default ManagerPanelComponent;
