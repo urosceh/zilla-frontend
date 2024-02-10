@@ -1,0 +1,187 @@
+.manager-panel-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  min-width: 1000px;
+  width: 90%;
+}
+
+.access-management-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.giving-access,
+.removing-access {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--background-color);
+  width: 1000px;
+  border-bottom: 1px solid #ccc;
+  margin: 5px auto;
+}
+
+.giving-access-select,
+.removing-access-select {
+  display: flex;
+  width: 25%;
+}
+
+.giving-access-list,
+.removing-access-list {
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.giving-access-button,
+.removing-access-button {
+  margin: auto 10px;
+  background-color: var(--selected-color);
+  padding: 10px;
+  border-radius: 10px;
+  width: 100px;
+}
+
+.giving-access-selected-users,
+.removing-access-selected-users {
+  height: 100px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 300px;
+  text-align: left;
+}
+
+.giving-access-selected-users::-webkit-scrollbar,
+.removing-access-selected-users::-webkit-scrollbar {
+  width: 12px;
+}
+
+.giving-access-selected-users::-webkit-scrollbar-thumb,
+.removing-access-selected-users::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 6px;
+}
+
+.giving-access-selected-users::-webkit-scrollbar-thumb:hover,
+.removing-access-selected-users::-webkit-scrollbar-thumb:hover {
+  background-color: #666;
+}
+
+.giving-access-selected-users::-webkit-scrollbar-track,
+.removing-access-selected-users::-webkit-scrollbar-track {
+  background-color: #fff;
+}
+
+.giving-access-selected-users::-webkit-scrollbar-track:hover,
+.removing-access-selected-users::-webkit-scrollbar-track:hover {
+  background-color: #f0f0f0;
+}
+
+/* .create-sprint-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 1000px;
+  padding: 20px;
+  background-color: var(--background-color);
+} */
+
+.create-sprint-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 500px;
+  margin: 10px auto;
+  gap: 10px;
+  border: 1px solid var(--board-color);
+  border-radius: 10px;
+}
+
+.create-sprint-input input,
+.create-sprint-button button {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid var(--board-color);
+  border-radius: 5px;
+  margin: 20px;
+  background-color: var(--card-color);
+  color: var(--text-color);
+}
+
+.create-sprint-button button {
+  cursor: pointer;
+  background-color: var(--selected-color);
+}
+
+.create-sprint-button button:hover {
+  background-color: var(--add-btn-hover);
+}
+
+/* Dropdown */
+.access-dropdown {
+  width: fit-content;
+  padding: 10px 0;
+}
+
+.access-dropdown > label {
+  padding: 15px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--text-color);
+  text-align: left;
+  transition: background-color 0.3s ease;
+}
+
+.access-dropdown:hover {
+  background-color: var(--modal-color);
+}
+
+.access-dropdown-input {
+  position: absolute;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  cursor: pointer;
+  overflow-y: auto;
+}
+
+.filter-dropdown-input {
+  display: none;
+}
+
+.access-dropdown-input {
+  display: flex;
+  color: var(--text-color);
+  text-align: left;
+  background-color: var(--background-color);
+  padding: 10px;
+  margin: 10px 0 0;
+  border: 1px solid var(--dark-background-color);
+  width: max-content;
+}
+
+.access-dropdown-input > label {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.access-dropdown-input.active > label:hover {
+  background-color: var(--modal-color);
+}
+
+.access-dropdown-input [type="checkbox"] {
+  margin-right: 10px;
+}
+
+.access-dropdown-input [value] {
+  padding-right: 10px;
+}

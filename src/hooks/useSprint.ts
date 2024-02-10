@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {ISprintDto} from "../entities/Sprint";
+import {CreateSprint, ISprintDto} from "../entities/Sprint";
 import {AxiosClient} from "../lib/AxiosClient";
 
 export const useGetSprints: (projectKey: string) => {sprints: ISprintDto[]; getSprints: () => Promise<void>; isLoading: boolean} = (
@@ -22,5 +22,20 @@ export const useGetSprints: (projectKey: string) => {sprints: ISprintDto[]; getS
     getSprints,
     sprints,
     isLoading,
+  };
+};
+
+export const useCreteSprint: () => {
+  createSprint: (sprint: CreateSprint) => Promise<ISprintDto>;
+} = () => {
+  const axiosInstance = AxiosClient.getInstance();
+
+  const createSprint = async (sprint: CreateSprint) => {
+    const createdSprint = await axiosInstance.createSprint(sprint);
+    return createdSprint;
+  };
+
+  return {
+    createSprint,
   };
 };
