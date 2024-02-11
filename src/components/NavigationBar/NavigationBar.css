@@ -39,8 +39,6 @@
 .left-section .dropdown-content {
   display: none;
   margin-top: 10px;
-  left: 0;
-  margin-left: 30px;
   position: absolute;
   background-color: var(--drop-down-color);
   min-width: 160px;
@@ -63,17 +61,6 @@
 .left-section .dropdown-content a:hover {
   background-color: var(--dark-background-color);
   cursor: pointer;
-}
-
-.create-issue-navigation-item {
-  color: var(--text-color);
-  padding: 10px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.create-issue-navigation-item:hover {
-  background-color: var(--selected-color);
 }
 
 /* Right Section */

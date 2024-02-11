@@ -18,11 +18,13 @@ const ProjectsPage = () => {
         <div>Loading...</div>
       ) : (
         <div>
-          <div className="search-filter">
-            <SearchComponent setData={setSearchData} placeholder="Search Project Name or Key..." />
-          </div>
-          <div className="projects-list">
-            <ProjectsTable projects={projects} />
+          <div>
+            <div className="search-filter">
+              <SearchComponent setData={setSearchData} placeholder="Search Project Name or Key..." />
+            </div>
+            <div className="projects-list">
+              <ProjectsTable projects={projects} />
+            </div>
           </div>
         </div>
       )}

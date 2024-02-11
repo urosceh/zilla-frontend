@@ -1,4 +1,5 @@
 import React, {Dispatch, SetStateAction, useState} from "react";
+import {Link, useParams} from "react-router-dom";
 import {ISprintDto} from "../../entities/Sprint";
 import {IUserDto} from "../../entities/User";
 import "./FilterComponent.css";
@@ -28,6 +29,9 @@ const FilterComponent: React.FC<Props> = ({
   setters: {setSelectedAssignees, setSelectedReporters, setSelectedSprints, setSelectedStatuses},
   getters: {selectedAssignees, selectedReporters, selectedSprints, selectedStatuses},
 }) => {
+  const params = useParams();
+  const projectKey = params.projectKey as string;
+
   const [openFilter, setOpenFilter] = useState<string | null>(null);
 
   const orderedAssignees = [...users].sort((a, b) => {
@@ -167,6 +171,10 @@ const FilterComponent: React.FC<Props> = ({
             ))}
           </div>
         )}
+      </div>
+
+      <div className="create-issue-navigation-item">
+        <Link to={`/${projectKey}/new`}>+</Link>
       </div>
     </div>
   );
