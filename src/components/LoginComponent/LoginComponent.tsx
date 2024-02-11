@@ -5,9 +5,10 @@ import "./LoginComponent.css";
 
 interface Props {
   setLoggedIn: Dispatch<SetStateAction<boolean>>;
+  setIsAdmin: Dispatch<SetStateAction<boolean>>;
 }
 
-const LoginComponent: React.FC<Props> = ({setLoggedIn}) => {
+const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -50,9 +51,11 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn}) => {
     axiosInstance
       .login(email, password)
       .then((response) => {
+        localStorage.setItem("loggedIn", "true");
         setLoggedIn(true);
         if (response.adminBearerToken && response.adminBearerToken === response.bearerToken) {
-          // add to cookie
+          setIsAdmin(true);
+          localStorage.setItem("isAdmin", "true");
         }
         navigate("/");
       })

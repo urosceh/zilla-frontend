@@ -1,9 +1,15 @@
-import {useEffect, useState} from "react";
-import {Link, useParams} from "react-router-dom";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {useGetProjects} from "../../hooks/useProjects";
+import {AxiosClient} from "../../lib/AxiosClient";
 import "./NavigationBar.css";
 
-const NavigationBar = () => {
+interface Props {
+  isAdmin: boolean;
+  setLoggedIn: Dispatch<SetStateAction<boolean>>;
+}
+
+const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const params = useParams();
   const projectKey = params.projectKey as string;
@@ -20,6 +26,17 @@ const NavigationBar = () => {
   const handlePasswordChange = () => {
     // Logic for handling password change
     console.log("Password change clicked");
+  };
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    AxiosClient.getInstance()
+      .logout()
+      .then(() => {
+        setLoggedIn(false);
+        navigate("/login");
+      });
   };
 
   return (
@@ -53,7 +70,9 @@ const NavigationBar = () => {
               <Link to="/" onClick={handlePasswordChange}>
                 Change Password
               </Link>
-              <Link to="/logout">Logout</Link>
+              <Link to="/" onClick={handleLogout}>
+                Logout
+              </Link>
             </div>
           )}
         </div>

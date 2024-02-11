@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import ManagerPanelComponent from "../components/ManagerPanelComponent/ManagerPanelComponent";
-import NavigationBar from "../components/NavigationBar/NavigationBar";
 import {IUserDto} from "../entities/User";
 import {useUsers} from "../hooks/useUsers";
 
@@ -36,7 +35,6 @@ const ManagerPage = () => {
         <div>Loading...</div>
       ) : (
         <div>
-          <NavigationBar />
           <ManagerPanelComponent projectUsers={projectUsers} nonProjectUsers={nonProjectUsers} />
         </div>
       )}
