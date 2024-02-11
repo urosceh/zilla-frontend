@@ -51,9 +51,11 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin}) => {
     axiosInstance
       .login(email, password)
       .then((response) => {
+        localStorage.setItem("loggedIn", "true");
         setLoggedIn(true);
         if (response.adminBearerToken && response.adminBearerToken === response.bearerToken) {
           setIsAdmin(true);
+          localStorage.setItem("isAdmin", "true");
         }
         navigate("/");
       })

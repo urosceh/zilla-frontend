@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import "./App.css";
 import NavigationBar from "./components/NavigationBar/NavigationBar";
@@ -13,8 +13,20 @@ function App() {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
+  useEffect(() => {
+    const loggedInStatus = localStorage.getItem("loggedIn");
+    if (loggedInStatus === "true") {
+      setLoggedIn(true);
+    }
+    const adminStatus = localStorage.getItem("isAdmin");
+    if (adminStatus === "true") {
+      setIsAdmin(true);
+    }
+  }, []);
+
   const redirectToLogin = () => {
-    if (!loggedIn) {
+    const loggedInStatus = localStorage.getItem("loggedIn");
+    if (loggedInStatus !== "true") {
       return <Navigate to="/login" />;
     }
   };
@@ -25,7 +37,7 @@ function App() {
         {redirectToLogin()}
         {loggedIn && <NavigationBar isAdmin={isAdmin} setLoggedIn={setLoggedIn} />}
         <Routes>
-          <Route path="/login" element={<LoginPage setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} />} />
+          <Route path="/login" element={loggedIn ? <Navigate to="/" /> : <LoginPage setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} />} />
           <Route path="/" element={<ProjectsPage />} />
           <Route path="/:projectKey/issues" element={<AllProjectsIssuesPage />} />
           {/* <Route path="/:projectKey/kanban" element={<KanbanPage />} /> */}

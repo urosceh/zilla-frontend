@@ -1,7 +1,5 @@
 import {Dispatch, SetStateAction} from "react";
-import {CookieSetOptions} from "universal-cookie";
 import LoginComponent from "../components/LoginComponent/LoginComponent";
-import {Cookie} from "../types/Cookie";
 
 interface Props {
   setLoggedIn: Dispatch<SetStateAction<boolean>>;

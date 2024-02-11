@@ -62,7 +62,7 @@ export class AxiosClient {
       const response = await this._client.get("/user/all", {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
         params,
       });
@@ -78,7 +78,7 @@ export class AxiosClient {
       const response = await this._client.get("/project/all", {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
       });
 
@@ -93,7 +93,7 @@ export class AxiosClient {
       params: {projectKey},
       headers: {
         ...this._client.defaults.headers.common,
-        Authorization: localStorage.getItem("bearerToken"),
+        Authorization: this._cookies.get("bearerToken"),
       },
     });
 
@@ -105,7 +105,7 @@ export class AxiosClient {
       const response = await this._client.post("/issue", issue, {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
       });
 
@@ -121,7 +121,7 @@ export class AxiosClient {
       const response = await this._client.patch(`/issue/${issue.issueId}`, body, {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
         params: {projectKey},
       });
@@ -146,7 +146,7 @@ export class AxiosClient {
       const response = await this._client.get(`issue/project/${projectKey}`, {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
         params,
       });
@@ -162,7 +162,7 @@ export class AxiosClient {
       const response = await this._client.get(`sprint/${projectKey}/issues`, {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
       });
 
@@ -177,7 +177,7 @@ export class AxiosClient {
       const response = await this._client.get(`/project/${projectKey}`, {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
       });
 
@@ -192,7 +192,7 @@ export class AxiosClient {
       const response = await this._client.get(`/sprint/${projectKey}`, {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
       });
 
@@ -207,7 +207,7 @@ export class AxiosClient {
       const response = await this._client.post("/sprint", sprint, {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
       });
 
@@ -222,7 +222,7 @@ export class AxiosClient {
       const response = await this._client.get("/issue-status/", {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
       });
 
@@ -240,7 +240,7 @@ export class AxiosClient {
         {
           headers: {
             ...this._client.defaults.headers.common,
-            Authorization: localStorage.getItem("bearerToken"),
+            Authorization: this._cookies.get("bearerToken"),
           },
         }
       );
@@ -254,7 +254,7 @@ export class AxiosClient {
       await this._client.delete("/access", {
         headers: {
           ...this._client.defaults.headers.common,
-          Authorization: localStorage.getItem("bearerToken"),
+          Authorization: this._cookies.get("bearerToken"),
         },
         data: {userIds, projectKey},
       });
