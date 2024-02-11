@@ -2,7 +2,7 @@ import axios, {AxiosInstance} from "axios";
 import {Cookies} from "react-cookie";
 import {IIssueCreate, IIssueDto, IIssueSearchOptions, IIssueUpdate} from "../entities/Issue";
 import {CreateSprint} from "../entities/Sprint";
-import {IUserDto} from "../entities/User";
+import {IUserDto, UserCreate} from "../entities/User";
 
 export class AxiosClient {
   private static _instance: AxiosClient;
@@ -45,7 +45,7 @@ export class AxiosClient {
       },
     });
 
-    this._cookies.remove("bearerToken");
+    this._cookies.set("bearerToken", null);
   }
 
   public async getAllUsers(projectKey?: string): Promise<IUserDto[]> {
@@ -68,6 +68,27 @@ export class AxiosClient {
       });
 
       return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async createUsers(usersForCreate: UserCreate[]): Promise<void> {
+    try {
+      const users = usersForCreate.map((u) => {
+        return {
+          email: u.email,
+          firstName: u.firstName,
+          lastName: u.lastName,
+        };
+      });
+
+      await this._client.post("/user/create-batch", usersForCreate, {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: this._cookies.get("bearerToken"),
+        },
+      });
     } catch (error) {
       throw error;
     }

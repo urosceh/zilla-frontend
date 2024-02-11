@@ -73,6 +73,7 @@ const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
               <Link to="/" onClick={handleLogout}>
                 Logout
               </Link>
+              {isAdmin && <Link to="/admin/panel">Admin Panel</Link>}
             </div>
           )}
         </div>

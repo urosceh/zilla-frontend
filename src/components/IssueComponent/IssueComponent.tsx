@@ -6,7 +6,7 @@ import {IUserDto} from "../../entities/User";
 import {useUpdateIssue} from "../../hooks/useIssue";
 import {useGetIssueStatuses} from "../../hooks/useIssueStatus";
 import {useGetSprints} from "../../hooks/useSprint";
-import {useUsers} from "../../hooks/useUsers";
+import {useUsers} from "../../hooks/useUser";
 import "./IssueComponent.css";
 interface Props {
   issue: IIssueDto;

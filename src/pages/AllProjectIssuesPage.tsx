@@ -6,7 +6,7 @@ import {IIssueDto, IIssueSearchOptions} from "../entities/Issue";
 import {useGetIssueStatuses} from "../hooks/useIssueStatus";
 import {useGetAllIssues} from "../hooks/useIssues";
 import {useGetSprints} from "../hooks/useSprint";
-import {useUsers} from "../hooks/useUsers";
+import {useUsers} from "../hooks/useUser";
 
 const AllProjectsIssuesPage = () => {
   const params = useParams();

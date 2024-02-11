@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import "./App.css";
 import NavigationBar from "./components/NavigationBar/NavigationBar";
+import AdminPage from "./pages/AdminPage";
 import AllProjectsIssuesPage from "./pages/AllProjectIssuesPage";
 import CreateIssuePage from "./pages/CreateIssuePage";
 import IssuePage from "./pages/IssuePage";
@@ -44,7 +45,7 @@ function App() {
           <Route path="/:projectKey/new" element={<CreateIssuePage />} />
           <Route path="/:projectKey/:issueId" element={<IssuePage />} />
           <Route path="/manager/:projectKey/panel" element={<ManagerPage />} />
-          {/* <Route path="/logout" element={<LogoutPage />} /> */}
+          <Route path="/admin/panel" element={<AdminPage />} />
         </Routes>
       </BrowserRouter>
     </div>

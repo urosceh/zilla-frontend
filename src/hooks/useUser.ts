@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {IUserDto} from "../entities/User";
+import {IUserDto, UserCreate} from "../entities/User";
 import {AxiosClient} from "../lib/AxiosClient";
 
 export const useUsers: () => {users: IUserDto[]; getAllUsers: (projectKey?: string) => Promise<IUserDto[]>; isLoading: boolean} = () => {
@@ -22,5 +22,17 @@ export const useUsers: () => {users: IUserDto[]; getAllUsers: (projectKey?: stri
     getAllUsers,
     users,
     isLoading,
+  };
+};
+
+export const useCreateUsers: () => {createUsers: (users: UserCreate[]) => Promise<void>} = () => {
+  const axiosInstance = AxiosClient.getInstance();
+
+  const createUsers = async (users: UserCreate[]): Promise<void> => {
+    await axiosInstance.createUsers(users);
+  };
+
+  return {
+    createUsers,
   };
 };

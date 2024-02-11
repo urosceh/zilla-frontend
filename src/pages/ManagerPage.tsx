@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import ManagerPanelComponent from "../components/ManagerPanelComponent/ManagerPanelComponent";
 import {IUserDto} from "../entities/User";
-import {useUsers} from "../hooks/useUsers";
+import {useUsers} from "../hooks/useUser";
 
 const ManagerPage = () => {
   const params = useParams();

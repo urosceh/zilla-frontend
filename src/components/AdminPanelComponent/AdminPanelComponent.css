@@ -1,4 +1,4 @@
-.manager-panel-container {
+.admin-panel-container {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
@@ -12,8 +12,7 @@
   margin: 0 auto;
 }
 
-.giving-access,
-.removing-access {
+.sending-forgotten-email {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -24,22 +23,19 @@
   margin: 5px auto;
 }
 
-.giving-access-select,
-.removing-access-select {
+.sending-forgotten-email-select {
   display: flex;
   width: 25%;
 }
 
-.giving-access-list,
-.removing-access-list {
+.sending-forgotten-email-list {
   width: 60%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.giving-access-button,
-.removing-access-button {
+.sending-forgotten-email-button {
   margin: auto 10px;
   background-color: var(--selected-color);
   padding: 10px;
@@ -47,8 +43,7 @@
   width: 100px;
 }
 
-.giving-access-selected-users,
-.removing-access-selected-users {
+.sending-forgotten-email-selected-users {
   height: 100px;
   overflow-y: auto;
   overflow-x: auto;
@@ -58,42 +53,28 @@
   text-align: left;
 }
 
-.giving-access-selected-users::-webkit-scrollbar,
-.removing-access-selected-users::-webkit-scrollbar {
+.sending-forgotten-email-selected-users::-webkit-scrollbar {
   width: 12px;
 }
 
-.giving-access-selected-users::-webkit-scrollbar-thumb,
-.removing-access-selected-users::-webkit-scrollbar-thumb {
+.sending-forgotten-email-selected-users::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 6px;
 }
 
-.giving-access-selected-users::-webkit-scrollbar-thumb:hover,
-.removing-access-selected-users::-webkit-scrollbar-thumb:hover {
+.sending-forgotten-email-selected-users::-webkit-scrollbar-thumb:hover {
   background-color: #666;
 }
 
-.giving-access-selected-users::-webkit-scrollbar-track,
-.removing-access-selected-users::-webkit-scrollbar-track {
+.sending-forgotten-email-selected-users::-webkit-scrollbar-track {
   background-color: #fff;
 }
 
-.giving-access-selected-users::-webkit-scrollbar-track:hover,
-.removing-access-selected-users::-webkit-scrollbar-track:hover {
+.sending-forgotten-email-selected-users::-webkit-scrollbar-track:hover {
   background-color: #f0f0f0;
 }
 
-/* .create-sprint-container {
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  width: 1000px;
-  padding: 20px;
-  background-color: var(--background-color);
-} */
-
-.create-sprint-container {
+.create-project-container {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -104,8 +85,21 @@
   border-radius: 10px;
 }
 
-.create-sprint-input input,
-.create-sprint-button button {
+.create-project-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.create-project-input-label {
+  width: 150px;
+}
+
+.create-project-input input,
+.create-project-input select,
+.create-project-button button {
   width: 300px;
   padding: 10px;
   border: 1px solid var(--board-color);
@@ -115,22 +109,68 @@
   color: var(--text-color);
 }
 
-.create-sprint-button button {
+.create-project-button button {
   cursor: pointer;
   background-color: var(--selected-color);
 }
 
-.create-sprint-button button:hover {
+.create-project-button button:hover {
+  background-color: var(--add-btn-hover);
+}
+
+/* USER  */
+
+.create-user-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 500px;
+  margin: 10px auto;
+  gap: 10px;
+  border: 1px solid var(--board-color);
+  border-radius: 10px;
+}
+
+.create-user-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.create-user-input-label {
+  width: 150px;
+}
+
+.create-user-input input,
+.create-user-input select,
+.create-user-button button {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid var(--board-color);
+  border-radius: 5px;
+  margin: 20px;
+  background-color: var(--card-color);
+  color: var(--text-color);
+}
+
+.create-user-button button {
+  cursor: pointer;
+  background-color: var(--selected-color);
+}
+
+.create-user-button button:hover {
   background-color: var(--add-btn-hover);
 }
 
 /* Dropdown */
-.access-dropdown {
+.users-dropdown {
   width: fit-content;
   padding: 10px 0;
 }
 
-.access-dropdown > label {
+.users-dropdown > label {
   padding: 15px 20px;
   font-size: 16px;
   cursor: pointer;
@@ -139,11 +179,11 @@
   transition: background-color 0.3s ease;
 }
 
-.access-dropdown:hover {
+.users-dropdown:hover {
   background-color: var(--modal-color);
 }
 
-.access-dropdown-input {
+.users-dropdown-input {
   position: absolute;
   height: 300px;
   display: flex;
@@ -153,7 +193,7 @@
   overflow-y: auto;
 }
 
-.access-dropdown-input {
+.users-dropdown-input {
   display: flex;
   color: var(--text-color);
   text-align: left;
@@ -164,20 +204,20 @@
   width: max-content;
 }
 
-.access-dropdown-input > label {
+.users-dropdown-input > label {
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.access-dropdown-input.active > label:hover {
+.users-dropdown-input.active > label:hover {
   background-color: var(--modal-color);
 }
 
-.access-dropdown-input [type="checkbox"] {
+.users-dropdown-input [type="checkbox"] {
   margin-right: 10px;
 }
 
-.access-dropdown-input [value] {
+.users-dropdown-input [value] {
   padding-right: 10px;
 }
