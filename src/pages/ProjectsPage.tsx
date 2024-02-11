@@ -9,7 +9,9 @@ const ProjectsPage = () => {
   const [searchData, setSearchData] = useState("");
 
   useEffect(() => {
-    getProjects();
+    getProjects().then((projects) => {
+      console.log(projects);
+    });
   }, [searchData]);
 
   return (

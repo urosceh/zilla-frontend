@@ -6,6 +6,7 @@ import {ClientCookies} from "./lib/ClientCookies";
 import AdminPage from "./pages/AdminPage";
 import AllProjectsIssuesPage from "./pages/AllProjectIssuesPage";
 import CreateIssuePage from "./pages/CreateIssuePage";
+import ForgottenPasswordPage from "./pages/ForgottenPasswordPage";
 import IssuePage from "./pages/IssuePage";
 import KanbanPage from "./pages/KanbanPage";
 import LoginPage from "./pages/LoginPage";
@@ -40,6 +41,7 @@ function App() {
             path="/login"
             element={!loggedIn ? <LoginPage setLoggedIn={setLoggedIn} setIsAdmin={setIsAdmin} cookies={cookies} /> : <Navigate to="/" />}
           />
+          <Route path="/forgotten-password" element={!loggedIn ? <ForgottenPasswordPage /> : <Navigate to="/" />} />
           <Route path="/" element={loggedIn ? <ProjectsPage /> : <Navigate to="/login" />} />
           <Route path="/:projectKey/issues" element={loggedIn ? <AllProjectsIssuesPage /> : <Navigate to="/login" />} />
           <Route path="/:projectKey/new" element={loggedIn ? <CreateIssuePage /> : <Navigate to="/login" />} />

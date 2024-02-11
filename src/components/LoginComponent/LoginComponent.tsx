@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Cookies from "universal-cookie";
 import {AxiosClient} from "../../lib/AxiosClient";
 import "./LoginComponent.css";
@@ -21,11 +21,10 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
   const navigate = useNavigate();
 
   const onButtonClick = () => {
-    // Set initial error values to empty
     setEmailError("");
     setPasswordError("");
 
-    if ("" === email) {
+    if (email === "") {
       setEmailError("Please enter your email");
       return;
     }
@@ -35,7 +34,7 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
       return;
     }
 
-    if ("" === password) {
+    if (password === "") {
       setPasswordError("Please enter a password");
       return;
     }
@@ -92,6 +91,10 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
       <br />
       <div className={"input-container"}>
         <input className={"input-button"} type="button" onClick={onButtonClick} value={"Log in"} />
+      </div>
+      <br />
+      <div className="forgotten-password">
+        <Link to="/forgotten-password">Forgotten your password?</Link>
       </div>
     </div>
   );

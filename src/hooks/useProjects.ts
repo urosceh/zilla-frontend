@@ -2,7 +2,7 @@ import {useState} from "react";
 import {IProjectDto} from "../entities/Project";
 import {AxiosClient} from "../lib/AxiosClient";
 
-export const useGetProjects = (): {getProjects: () => Promise<void>; projects: IProjectDto[]; isLoading: boolean} => {
+export const useGetProjects = (): {getProjects: () => Promise<IProjectDto[]>; projects: IProjectDto[]; isLoading: boolean} => {
   const axiosInstance = AxiosClient.getInstance();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -14,6 +14,8 @@ export const useGetProjects = (): {getProjects: () => Promise<void>; projects: I
 
     setProjects(response);
     setIsLoading(false);
+
+    return response;
   };
 
   return {

@@ -70,6 +70,19 @@ export class AxiosClient {
     }
   }
 
+  public async resetPassword(data: {securityCode: string; newPassword: string}): Promise<void> {
+    try {
+      const body = {
+        securityCode: data.securityCode,
+        newPassword: data.newPassword,
+      };
+
+      await this._client.post("/user/set-forgotten-password", body);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async getAllUsers(projectKey?: string): Promise<IUserDto[]> {
     try {
       const params = {
