@@ -1,14 +1,16 @@
 import React, {Dispatch, SetStateAction, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import Cookies from "universal-cookie";
 import {AxiosClient} from "../../lib/AxiosClient";
 import "./LoginComponent.css";
 
 interface Props {
   setLoggedIn: Dispatch<SetStateAction<boolean>>;
   setIsAdmin: Dispatch<SetStateAction<boolean>>;
+  cookies: Cookies;
 }
 
-const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin}) => {
+const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -51,12 +53,15 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin}) => {
     axiosInstance
       .login(email, password)
       .then((response) => {
-        localStorage.setItem("loggedIn", "true");
+        // localStorage.setItem("loggedIn", "true");
         setLoggedIn(true);
         if (response.adminBearerToken && response.adminBearerToken === response.bearerToken) {
           setIsAdmin(true);
-          localStorage.setItem("isAdmin", "true");
+          // localStorage.setItem("isAdmin", "true");
+          cookies.set("adminBearerToken", response.adminBearerToken, {path: "/"});
         }
+        cookies.set("bearerToken", response.bearerToken, {path: "/"});
+
         navigate("/");
       })
       .catch((error) => {

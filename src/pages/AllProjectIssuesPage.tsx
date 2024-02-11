@@ -6,12 +6,14 @@ import {IIssueDto, IIssueSearchOptions} from "../entities/Issue";
 import {useGetIssueStatuses} from "../hooks/useIssueStatus";
 import {useGetAllIssues} from "../hooks/useIssues";
 import {useGetSprints} from "../hooks/useSprint";
-import {useUsers} from "../hooks/useUsers";
+import {useUsers} from "../hooks/useUser";
 
 const AllProjectsIssuesPage = () => {
   const params = useParams();
   const projectKey = params.projectKey as string;
 
+  const [page, setPage] = useState<number>(1);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const [allIssues, setAllIssues] = useState<IIssueDto[]>([]);
@@ -29,17 +31,25 @@ const AllProjectsIssuesPage = () => {
     getSprints();
     getIssueStatuses();
     getAllUsers(projectKey);
+    const limit = 10;
     const options: IIssueSearchOptions = {
       asigneeIds: selectedAssignees,
       reporterIds: selectedReporters,
       issueStatuses: selectedStatuses,
       sprintIds: selectedSprints,
+      limit,
+      offset: (page - 1) * limit,
     };
     getAllIssues(projectKey, options).then((issues: IIssueDto[]) => {
       setAllIssues(issues);
+      if (issues.length > limit) {
+        setHasNextPage(true);
+      } else {
+        setHasNextPage(false);
+      }
       setIsLoading(false);
     });
-  }, [selectedAssignees, selectedReporters, selectedStatuses, selectedSprints]);
+  }, [selectedAssignees, selectedReporters, selectedStatuses, selectedSprints, page]);
 
   return (
     <div>
@@ -56,6 +66,19 @@ const AllProjectsIssuesPage = () => {
               getters={{selectedAssignees, selectedReporters, selectedSprints, selectedStatuses}}
             />
             <IssuesTable issues={allIssues} />
+            <div className="pagination">
+              {page > 1 && (
+                <button className="previous" onClick={() => setPage(page - 1)}>
+                  Prev
+                </button>
+              )}
+              <span>{page}</span>
+              {hasNextPage && (
+                <button className="next" onClick={() => setPage(page + 1)}>
+                  Next
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
