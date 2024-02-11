@@ -1,4 +1,5 @@
 import axios, {AxiosInstance} from "axios";
+import {Cookies} from "react-cookie";
 import {IIssueCreate, IIssueDto, IIssueSearchOptions, IIssueUpdate} from "../entities/Issue";
 import {CreateSprint} from "../entities/Sprint";
 import {IUserDto} from "../entities/User";
@@ -6,6 +7,7 @@ import {IUserDto} from "../entities/User";
 export class AxiosClient {
   private static _instance: AxiosClient;
   private _client: AxiosInstance;
+  private _cookies: Cookies;
 
   private constructor() {
     this._client = axios.create({
@@ -14,6 +16,8 @@ export class AxiosClient {
         "Content-Type": "application/json",
       },
     });
+
+    this._cookies = new Cookies();
   }
 
   public static getInstance(): AxiosClient {
@@ -27,17 +31,21 @@ export class AxiosClient {
   public async login(email: string, password: string): Promise<{bearerToken: string; adminBearerToken?: string}> {
     const response = await this._client.post("/user/login", {email, password});
 
-    this._client.defaults.headers.common["Authorization"] = response.data.bearerToken;
-
-    // save the token to cookie
-    // document.cookie = `bearerToken=${response.data.bearerToken}; path=/`;
-    localStorage.setItem("bearerToken", response.data.bearerToken);
-
-    // if (response.data.adminBearerToken && response.data.adminBearerToken === response.data.bearerToken) {
-    //   Cookies.set("adminBearerToken", response.data.adminBearerToken);
-    // }
+    // localStorage.setItem("bearerToken", response.data.bearerToken);
+    this._cookies.set("bearerToken", response.data.bearerToken, {path: "/"});
 
     return response.data;
+  }
+
+  public async logout(): Promise<void> {
+    await this._client.post("/user/logout", null, {
+      headers: {
+        ...this._client.defaults.headers.common,
+        Authorization: this._cookies.get("bearerToken"),
+      },
+    });
+
+    this._cookies.remove("bearerToken");
   }
 
   public async getAllUsers(projectKey?: string): Promise<IUserDto[]> {

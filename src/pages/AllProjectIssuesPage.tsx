@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import FilterComponent from "../components/FilterComponent/FilterComponent";
 import IssuesTable from "../components/IssuesTable/IssuesTable";
-import NavigationBar from "../components/NavigationBar/NavigationBar";
 import {IIssueDto, IIssueSearchOptions} from "../entities/Issue";
 import {useGetIssueStatuses} from "../hooks/useIssueStatus";
 import {useGetAllIssues} from "../hooks/useIssues";
@@ -48,7 +47,6 @@ const AllProjectsIssuesPage = () => {
         <div>Loading...</div>
       ) : (
         <div>
-          <NavigationBar />
           <div className="projects-list">
             <FilterComponent
               users={users}
