@@ -7,19 +7,17 @@ import AdminPage from "./pages/AdminPage";
 import AllProjectsIssuesPage from "./pages/AllProjectIssuesPage";
 import CreateIssuePage from "./pages/CreateIssuePage";
 import IssuePage from "./pages/IssuePage";
+import KanbanPage from "./pages/KanbanPage";
 import LoginPage from "./pages/LoginPage";
 import ManagerPage from "./pages/ManagerPage";
 import ProjectsPage from "./pages/ProjectsPage";
 
 function App() {
   const cookies = ClientCookies.getCookies();
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [loggedIn, setLoggedIn] = useState<boolean>(true);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log(cookies.get("bearerToken"));
-    console.log(cookies.get("adminBearerToken"));
-
     const bearerToken = cookies.get("bearerToken");
     if (!bearerToken) {
       setLoggedIn(false);
@@ -45,6 +43,7 @@ function App() {
           <Route path="/" element={loggedIn ? <ProjectsPage /> : <Navigate to="/login" />} />
           <Route path="/:projectKey/issues" element={loggedIn ? <AllProjectsIssuesPage /> : <Navigate to="/login" />} />
           <Route path="/:projectKey/new" element={loggedIn ? <CreateIssuePage /> : <Navigate to="/login" />} />
+          <Route path="/:projectKey/kanban" element={loggedIn ? <KanbanPage /> : <Navigate to="/login" />} />
           <Route path="/:projectKey/:issueId" element={loggedIn ? <IssuePage /> : <Navigate to="/login" />} />
           <Route path="/manager/:projectKey/panel" element={loggedIn ? <ManagerPage /> : <Navigate to="/login" />} />
           <Route path="/admin/panel" element={loggedIn && isAdmin ? <AdminPage /> : <Navigate to="/login" />} />

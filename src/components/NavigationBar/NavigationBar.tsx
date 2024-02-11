@@ -11,8 +11,6 @@ interface Props {
 
 const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const params = useParams();
-  const projectKey = params.projectKey as string;
   const {projects, getProjects} = useGetProjects();
 
   useEffect(() => {
@@ -54,11 +52,16 @@ const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
             ))}
           </div>
         </div>
-        {/* <div className="navigation-item">
-          <Link to="/">Sprint</Link>
-        </div> */}
-        <div className="create-issue-navigation-item">
-          <Link to={`/${projectKey}/new`}>+</Link>
+
+        <div className="dropdown navigation-item">
+          <div className="dropdown-button">Kanbans</div>
+          <div className="dropdown-content">
+            {projects.map((project) => (
+              <Link key={project.projectId} to={`/${project.projectKey}/kanban`}>
+                {project.projectName}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 

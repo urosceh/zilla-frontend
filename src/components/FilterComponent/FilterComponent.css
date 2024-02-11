@@ -67,3 +67,15 @@
 .filter-dropdown-input.active [value] {
   padding-right: 10px;
 }
+
+.create-issue-navigation-item {
+  margin: auto 0;
+  color: var(--text-color);
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.create-issue-navigation-item:hover {
+  background-color: var(--selected-color);
+}

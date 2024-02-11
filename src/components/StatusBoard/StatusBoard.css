@@ -1,0 +1,50 @@
+.statuses-board {
+  position: relative;
+  display: flex;
+  word-wrap: break-word;
+  background-color: var(--board-color);
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  height: 100%;
+  max-height: 82vh;
+  color: var(--text-color);
+}
+.status-card {
+  padding: 10px;
+  margin: 10px;
+  background-color: var(--card-color);
+  border-radius: 5px;
+  box-shadow: 0 0 5px var(--card-box-shadow);
+  color: var(--text-color);
+  width: 250px;
+  max-height: 100%;
+}
+.status-name {
+  font-weight: bolder;
+}
+.status-issues-count {
+  font-size: 12px;
+  border-radius: 15px 15px 15px 15px;
+  padding-inline: 0.6rem;
+  border: 0.5px solid var(--card-box-shadow);
+  background-color: var(--card-color);
+  margin-inline: 10px;
+}
+
+/* .statuses_board {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f4f5f7;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.status_name {
+  font-weight: bold;
+}
+
+.status_issues_count {
+  color: #666;
+  margin-left: 5px;
+} */

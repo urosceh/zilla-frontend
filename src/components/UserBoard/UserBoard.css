@@ -1,0 +1,28 @@
+.user-board {
+  position: relative;
+  display: flex;
+  word-wrap: break-word;
+  background-color: var(--board-color);
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  height: 100%;
+  max-height: 82vh;
+  color: var(--text-color);
+}
+
+.user-status-cards {
+  padding: 10px;
+  margin: 10px;
+  background-color: var(--card-box-shadow);
+  border-radius: 5px;
+  color: var(--text-color);
+  width: 250px;
+  max-height: 100%;
+}
+
+.user-name {
+  text-align: left;
+  padding: 5px;
+  background-color: var(--background-color);
+}
