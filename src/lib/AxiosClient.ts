@@ -1,13 +1,15 @@
 import axios, {AxiosInstance} from "axios";
-import {Cookies} from "react-cookie";
+import Cookies from "universal-cookie";
 import {IIssueCreate, IIssueDto, IIssueSearchOptions, IIssueUpdate} from "../entities/Issue";
+import {ProjectCreate} from "../entities/Project";
 import {CreateSprint} from "../entities/Sprint";
 import {IUserDto, UserCreate} from "../entities/User";
+import {ClientCookies} from "./ClientCookies";
 
 export class AxiosClient {
   private static _instance: AxiosClient;
   private _client: AxiosInstance;
-  private _cookies: Cookies;
+  private _cookies: Cookies = ClientCookies.getCookies();
 
   private constructor() {
     this._client = axios.create({
@@ -16,8 +18,6 @@ export class AxiosClient {
         "Content-Type": "application/json",
       },
     });
-
-    this._cookies = new Cookies();
   }
 
   public static getInstance(): AxiosClient {
@@ -28,16 +28,20 @@ export class AxiosClient {
     return this._instance;
   }
 
+  public static setCookies(cookies: Cookies): void {
+    this._instance._cookies = cookies;
+  }
+
   public async login(email: string, password: string): Promise<{bearerToken: string; adminBearerToken?: string}> {
     const response = await this._client.post("/user/login", {email, password});
 
-    // localStorage.setItem("bearerToken", response.data.bearerToken);
     this._cookies.set("bearerToken", response.data.bearerToken, {path: "/"});
 
     return response.data;
   }
 
   public async logout(): Promise<void> {
+    const cookie = this._cookies.get("bearerToken");
     await this._client.post("/user/logout", null, {
       headers: {
         ...this._client.defaults.headers.common,
@@ -45,7 +49,25 @@ export class AxiosClient {
       },
     });
 
-    this._cookies.set("bearerToken", null);
+    this._cookies.remove("bearerToken");
+    this._cookies.remove("adminBearerToken");
+  }
+
+  public async sendPasswordResetEmail(email: string): Promise<void> {
+    try {
+      await this._client.post(
+        "/user/forgotten-password",
+        {email},
+        {
+          headers: {
+            ...this._client.defaults.headers.common,
+            Authorization: this._cookies.get("bearerToken"),
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   public async getAllUsers(projectKey?: string): Promise<IUserDto[]> {
@@ -83,12 +105,16 @@ export class AxiosClient {
         };
       });
 
-      await this._client.post("/user/create-batch", usersForCreate, {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
-      });
+      await this._client.post(
+        "/user/create-batch",
+        {users},
+        {
+          headers: {
+            ...this._client.defaults.headers.common,
+            Authorization: this._cookies.get("bearerToken"),
+          },
+        }
+      );
     } catch (error) {
       throw error;
     }
@@ -105,7 +131,7 @@ export class AxiosClient {
 
       return response.data;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   }
 
@@ -196,6 +222,27 @@ export class AxiosClient {
   public async getProject(projectKey: string): Promise<any> {
     try {
       const response = await this._client.get(`/project/${projectKey}`, {
+        headers: {
+          ...this._client.defaults.headers.common,
+          Authorization: this._cookies.get("bearerToken"),
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async createProject(projectForCreate: ProjectCreate): Promise<any> {
+    try {
+      const project = {
+        projectName: projectForCreate.projectName,
+        projectKey: projectForCreate.projectKey,
+        managerId: projectForCreate.managerId,
+      };
+
+      const response = await this._client.post("/project", project, {
         headers: {
           ...this._client.defaults.headers.common,
           Authorization: this._cookies.get("bearerToken"),

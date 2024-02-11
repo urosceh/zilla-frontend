@@ -1,9 +1,10 @@
 .App {
   text-align: center;
-  height: 100vh;
   width: 100vw;
   background-color: var(--background-color); /* or any other color you prefer */
   min-width: var(--min-width);
+  overflow-y: auto;
+  overflow-x: auto;
 }
 
 .App-logo {
@@ -42,25 +43,56 @@
   margin: 20px auto;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 12px;
+  height: 12px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
-  background: #666666;
+  background: #fff;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #595959;
-  border-radius: 20px 20px 20px 20px;
+  background: #9dc5ef;
+  border-radius: 10px;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(44, 44, 44);
+  background: #2e6da4;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 12px;
+  width: 12px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  background: #9dc5ef;
+}
+
+::-webkit-scrollbar-thumb:horizontal:hover {
+  background: #2e6da4;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.pagination span {
+  margin: 0 5px;
+  padding: 10px 20px;
+  cursor: default;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: var(--selected-color);
+  border-radius: 10px;
 }
 
 @keyframes App-logo-spin {

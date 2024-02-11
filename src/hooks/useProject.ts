@@ -21,3 +21,15 @@ export const useGetProject = () => {
     isLoading,
   };
 };
+
+export const useCreateProject = () => {
+  const axiosInstance = AxiosClient.getInstance();
+
+  const createProject = async (project: any) => {
+    await axiosInstance.createProject(project);
+  };
+
+  return {
+    createProject,
+  };
+};

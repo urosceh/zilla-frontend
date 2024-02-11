@@ -1,6 +1,8 @@
 import React, {useState} from "react";
-import {IUserDto} from "../../entities/User";
+import {IUserDto, UserCreate} from "../../entities/User";
+import {useCreateProject} from "../../hooks/useProject";
 import {useCreateUsers} from "../../hooks/useUser";
+import {AxiosClient} from "../../lib/AxiosClient";
 import "./AdminPanelComponent.css";
 
 interface Props {
@@ -32,11 +34,40 @@ const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
   };
 
   const handleSendForgottenPasswordEmail = () => {
-    // Logic for sending forgotten password email
-    console.log("Send forgotten password email");
+    const axiosInstance = AxiosClient.getInstance();
+    selectedUsers.forEach((user) => {
+      axiosInstance
+        .sendPasswordResetEmail(user.email)
+        .then(() => {
+          setSelectedUsers(selectedUsers.filter((u) => u.userId !== user.userId));
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    });
   };
 
-  const handleCreateProject = (e: any) => {};
+  const {createProject} = useCreateProject();
+
+  const handleCreateProject = (e: any) => {
+    e.preventDefault();
+    console.log({
+      projectName,
+      projectKey,
+      selectedManager,
+    });
+    if (projectName && projectKey && selectedManager.userId) {
+      createProject({projectName, projectKey, managerId: selectedManager.userId})
+        .then(() => {
+          setProjectName("");
+          setProjectKey("");
+          setSelectedManager(undefinedUser);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
 
   const handleManagerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const manager = allUsers.find((user) => user.userId === e.target.value);
@@ -47,7 +78,22 @@ const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
 
   const {createUsers} = useCreateUsers();
 
-  const handleCreateUser = (e: any) => {};
+  const handleCreateUser = (e: any) => {
+    e.preventDefault();
+    if (userEmail && userFirstName && userLasstName) {
+      const user: UserCreate = {
+        email: userEmail,
+        firstName: userFirstName,
+        lastName: userLasstName,
+      };
+
+      createUsers([user]).then(() => {
+        setUserEmail("");
+        setUserFirstName("");
+        setUserLasstName("");
+      });
+    }
+  };
 
   const [userEmail, setUserEmail] = useState<string>();
   const [userFirstName, setUserFirstName] = useState<string>();
