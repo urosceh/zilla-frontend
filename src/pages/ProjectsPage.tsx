@@ -20,7 +20,6 @@ const ProjectsPage = () => {
       .catch((error) => {
         setError(`${error.message}: ${error.response?.data}`);
       });
-    setSearchData(searchData);
   }, [searchData]);
 
   return (
