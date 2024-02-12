@@ -70,6 +70,20 @@ export class AxiosClient {
     }
   }
 
+  public async changePassword(data: {oldPassword: string; newPassword: string}): Promise<void> {
+    const body = {
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword,
+    };
+
+    await this._client.put("/user/password", body, {
+      headers: {
+        ...this._client.defaults.headers.common,
+        Authorization: this._cookies.get("bearerToken"),
+      },
+    });
+  }
+
   public async resetPassword(data: {securityCode: string; newPassword: string}): Promise<void> {
     try {
       const body = {
@@ -133,13 +147,16 @@ export class AxiosClient {
     }
   }
 
-  public async getAllUserProjects(): Promise<any> {
+  public async getAllUserProjects(search?: string): Promise<any> {
     try {
+      const params = search ? {search} : {};
+
       const response = await this._client.get("/project/all", {
         headers: {
           ...this._client.defaults.headers.common,
           Authorization: this._cookies.get("bearerToken"),
         },
+        params,
       });
 
       return response.data;

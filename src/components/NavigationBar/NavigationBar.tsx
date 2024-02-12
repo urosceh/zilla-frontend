@@ -32,11 +32,6 @@ const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
     setShowDropdown(!showDropdown);
   };
 
-  const handlePasswordChange = () => {
-    // Logic for handling password change
-    console.log("Password change clicked");
-  };
-
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -83,9 +78,7 @@ const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
             ⚙️
             {showDropdown && (
               <div className={`dropdown-content ${showDropdown ? "active" : ""}`}>
-                <Link to="/" onClick={handlePasswordChange}>
-                  Change Password
-                </Link>
+                <Link to="/change-password">Change Password</Link>
                 <Link to="/" onClick={handleLogout}>
                   Logout
                 </Link>

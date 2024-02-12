@@ -5,6 +5,7 @@ import NavigationBar from "./components/NavigationBar/NavigationBar";
 import {ClientCookies} from "./lib/ClientCookies";
 import AdminPage from "./pages/AdminPage";
 import AllProjectsIssuesPage from "./pages/AllProjectIssuesPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 import CreateIssuePage from "./pages/CreateIssuePage";
 import ForgottenPasswordPage from "./pages/ForgottenPasswordPage";
 import IssuePage from "./pages/IssuePage";
@@ -49,6 +50,7 @@ function App() {
           <Route path="/:projectKey/:issueId" element={loggedIn ? <IssuePage /> : <Navigate to="/login" />} />
           <Route path="/manager/:projectKey/panel" element={loggedIn ? <ManagerPage /> : <Navigate to="/login" />} />
           <Route path="/admin/panel" element={loggedIn && isAdmin ? <AdminPage /> : <Navigate to="/login" />} />
+          <Route path="/change-password" element={loggedIn ? <ChangePasswordPage /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -3,10 +3,10 @@ import {useNavigate} from "react-router-dom";
 import ErrorModal from "../../errors/ErrorModal/ErrorModal";
 import {AxiosClient} from "../../lib/AxiosClient";
 
-const ForgottenPasswordComponent = () => {
-  const [secretKey, setSecretKey] = useState("");
+const ChangePasswordComponent = () => {
+  const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
-  const [secretKeyError, setSecretKeyError] = useState("");
+  const [oldPasswordError, setOldPasswordError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
   const axiosInstance = AxiosClient.getInstance();
@@ -14,11 +14,11 @@ const ForgottenPasswordComponent = () => {
   const navigate = useNavigate();
 
   const onButtonClick = () => {
-    setSecretKeyError("");
+    setOldPasswordError("");
     setPasswordError("");
 
-    if (secretKey === "") {
-      setSecretKeyError("Please enter your secret key");
+    if (oldPassword === "") {
+      setOldPasswordError("Please enter your old password");
       return;
     }
 
@@ -27,22 +27,30 @@ const ForgottenPasswordComponent = () => {
       return;
     }
 
+    if (oldPassword.length <= 7) {
+      setOldPasswordError("The password must be 8 characters or longer");
+      return;
+    }
     if (password.length <= 7) {
       setPasswordError("The password must be 8 characters or longer");
       return;
     }
+    if (oldPassword === password) {
+      setPasswordError("The new password must be different from the old password");
+      return;
+    }
 
-    sendRequest();
+    login();
   };
 
   const [error, setError] = useState<string>("");
-  const sendRequest = () => {
+  const login = () => {
     axiosInstance
-      .resetPassword({securityCode: secretKey, newPassword: password})
-      .then((response) => {
-        navigate("/login");
+      .changePassword({oldPassword, newPassword: password})
+      .then(() => {
+        navigate("/");
       })
-      .catch((error) => {
+      .catch((error: any) => {
         setError(`${error.message}: ${error.response.data}`);
       });
   };
@@ -52,17 +60,18 @@ const ForgottenPasswordComponent = () => {
       {error && <ErrorModal error={error} setError={setError} />}
       <div className={"main-container"}>
         <div className={"title-container"}>
-          <div>Forgotten Password</div>
+          <div>Change Password</div>
         </div>
         <br />
         <div className={"input-container"}>
           <input
-            value={secretKey}
-            placeholder="Enter your secret key from email here"
-            onChange={(ev) => setSecretKey(ev.target.value)}
+            type="password"
+            value={oldPassword}
+            placeholder="Enter your old password here"
+            onChange={(ev) => setOldPassword(ev.target.value)}
             className={"input-box"}
           />
-          <label className="login-error-label">{secretKeyError}</label>
+          <label className="login-error-label">{oldPasswordError}</label>
         </div>
         <br />
         <div className={"input-container"}>
@@ -84,4 +93,4 @@ const ForgottenPasswordComponent = () => {
   );
 };
 
-export default ForgottenPasswordComponent;
+export default ChangePasswordComponent;
