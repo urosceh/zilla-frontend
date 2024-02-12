@@ -1,5 +1,6 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import ErrorModal from "../../errors/ErrorModal/ErrorModal";
 import {AxiosClient} from "../../lib/AxiosClient";
 
 const ForgottenPasswordComponent = () => {
@@ -31,49 +32,53 @@ const ForgottenPasswordComponent = () => {
       return;
     }
 
-    login();
+    sendRequest();
   };
 
-  // Log in a user using email and password
-  const login = () => {
+  const [error, setError] = useState<string>("");
+  const sendRequest = () => {
     axiosInstance
       .resetPassword({securityCode: secretKey, newPassword: password})
       .then((response) => {
         navigate("/login");
       })
       .catch((error) => {
-        console.log("Error: " + error);
+        setError(`${error.message}: ${error.response.data}`);
       });
   };
 
   return (
-    <div className={"main-container"}>
-      <div className={"title-container"}>
-        <div>Forgotten Password</div>
-      </div>
-      <br />
-      <div className={"input-container"}>
-        <input
-          value={secretKey}
-          placeholder="Enter your secret key from email here"
-          onChange={(ev) => setSecretKey(ev.target.value)}
-          className={"input-box"}
-        />
-        <label className="login-error-label">{secretKeyError}</label>
-      </div>
-      <br />
-      <div className={"input-container"}>
-        <input
-          value={password}
-          placeholder="Enter your new password here"
-          onChange={(ev) => setPassword(ev.target.value)}
-          className={"input-box"}
-        />
-        <label className="login-error-label">{passwordError}</label>
-      </div>
-      <br />
-      <div className={"input-container"}>
-        <input className={"input-button"} type="button" onClick={onButtonClick} value={"Log in"} />
+    <div>
+      {error && <ErrorModal error={error} setError={setError} />}
+      <div className={"main-container"}>
+        <div className={"title-container"}>
+          <div>Forgotten Password</div>
+        </div>
+        <br />
+        <div className={"input-container"}>
+          <input
+            value={secretKey}
+            placeholder="Enter your secret key from email here"
+            onChange={(ev) => setSecretKey(ev.target.value)}
+            className={"input-box"}
+          />
+          <label className="login-error-label">{secretKeyError}</label>
+        </div>
+        <br />
+        <div className={"input-container"}>
+          <input
+            type="password"
+            value={password}
+            placeholder="Enter your new password here"
+            onChange={(ev) => setPassword(ev.target.value)}
+            className={"input-box"}
+          />
+          <label className="login-error-label">{passwordError}</label>
+        </div>
+        <br />
+        <div className={"input-container"}>
+          <input className={"input-button"} type="button" onClick={onButtonClick} value={"Log in"} />
+        </div>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import ManagerPanelComponent from "../components/ManagerPanelComponent/ManagerPanelComponent";
 import {IUserDto} from "../entities/User";
+import ErrorModal from "../errors/ErrorModal/ErrorModal";
 import {useUsers} from "../hooks/useUser";
 
 const ManagerPage = () => {
@@ -15,6 +16,7 @@ const ManagerPage = () => {
 
   const {getAllUsers} = useUsers();
 
+  const [error, setError] = useState<string>("");
   useEffect(() => {
     getAllUsers(projectKey)
       .then((allProjectUsers) => {
@@ -26,11 +28,14 @@ const ManagerPage = () => {
           setIsLoading(false);
         });
       })
-      .catch((e) => console.error(e));
+      .catch((error) => {
+        setError(`${error.message}: ${error.response?.data}`);
+      });
   }, []);
 
   return (
     <div>
+      {error && <ErrorModal error={error} setError={setError} />}
       {isLoading ? (
         <div>Loading...</div>
       ) : (

@@ -11,3 +11,12 @@ export class DomainError {
 export enum ErrorCode {
   BadResponse = 502,
 }
+
+export const openErrorWindow = (errorMessage: string) => {
+  const errorWindow = window.open("", "_blank", "width=400,height=300");
+  if (errorWindow) {
+    errorWindow.document.write(`<h2>Error</h2><p>${errorMessage}</p>`);
+  } else {
+    console.error("Error: Could not open window.");
+  }
+};

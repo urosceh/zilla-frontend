@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom";
 import FilterComponent from "../components/FilterComponent/FilterComponent";
 import IssuesTable from "../components/IssuesTable/IssuesTable";
 import {IIssueDto, IIssueSearchOptions} from "../entities/Issue";
+import ErrorModal from "../errors/ErrorModal/ErrorModal";
 import {useGetIssueStatuses} from "../hooks/useIssueStatus";
 import {useGetAllIssues} from "../hooks/useIssues";
 import {useGetSprints} from "../hooks/useSprint";
@@ -27,10 +28,8 @@ const AllProjectsIssuesPage = () => {
   const {issueStatuses, getIssueStatuses} = useGetIssueStatuses();
   const {users, getAllUsers} = useUsers();
 
+  const [error, setError] = useState<string>("");
   useEffect(() => {
-    getSprints();
-    getIssueStatuses();
-    getAllUsers(projectKey);
     const limit = 10;
     const options: IIssueSearchOptions = {
       asigneeIds: selectedAssignees,
@@ -40,19 +39,25 @@ const AllProjectsIssuesPage = () => {
       limit,
       offset: (page - 1) * limit,
     };
-    getAllIssues(projectKey, options).then((issues: IIssueDto[]) => {
-      setAllIssues(issues);
-      if (issues.length > limit) {
-        setHasNextPage(true);
-      } else {
-        setHasNextPage(false);
-      }
-      setIsLoading(false);
-    });
+
+    Promise.all([getAllIssues(projectKey, options), getSprints(), getIssueStatuses(), getAllUsers(projectKey)])
+      .then(([issues, sprints, issueStatuses, users]) => {
+        setAllIssues(issues);
+        if (issues.length > limit) {
+          setHasNextPage(true);
+        } else {
+          setHasNextPage(false);
+        }
+        setIsLoading(false);
+      })
+      .catch((error: any) => {
+        setError(`${error.message}: ${error.response?.data}`);
+      });
   }, [selectedAssignees, selectedReporters, selectedStatuses, selectedSprints, page]);
 
   return (
     <div>
+      {error && <ErrorModal error={error} setError={setError} />}
       {isLoading || !allIssues ? (
         <div>Loading...</div>
       ) : (

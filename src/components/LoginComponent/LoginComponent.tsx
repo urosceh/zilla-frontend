@@ -1,6 +1,7 @@
 import React, {Dispatch, SetStateAction, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import Cookies from "universal-cookie";
+import ErrorModal from "../../errors/ErrorModal/ErrorModal";
 import {AxiosClient} from "../../lib/AxiosClient";
 import "./LoginComponent.css";
 
@@ -47,7 +48,7 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
     login();
   };
 
-  // Log in a user using email and password
+  const [error, setError] = useState<string>("");
   const login = () => {
     axiosInstance
       .login(email, password)
@@ -63,38 +64,42 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
 
         navigate("/");
       })
-      .catch((error) => {
-        console.log("Error: " + error);
+      .catch((error: any) => {
+        setError(`${error.message}: ${error.response.data}`);
       });
   };
 
   return (
-    <div className={"main-container"}>
-      <div className={"title-container"}>
-        <div>Login</div>
-      </div>
-      <br />
-      <div className={"input-container"}>
-        <input value={email} placeholder="Enter your email here" onChange={(ev) => setEmail(ev.target.value)} className={"input-box"} />
-        <label className="login-error-label">{emailError}</label>
-      </div>
-      <br />
-      <div className={"input-container"}>
-        <input
-          value={password}
-          placeholder="Enter your password here"
-          onChange={(ev) => setPassword(ev.target.value)}
-          className={"input-box"}
-        />
-        <label className="login-error-label">{passwordError}</label>
-      </div>
-      <br />
-      <div className={"input-container"}>
-        <input className={"input-button"} type="button" onClick={onButtonClick} value={"Log in"} />
-      </div>
-      <br />
-      <div className="forgotten-password">
-        <Link to="/forgotten-password">Forgotten your password?</Link>
+    <div>
+      {error && <ErrorModal error={error} setError={setError} />}
+      <div className={"main-container"}>
+        <div className={"title-container"}>
+          <div>Login</div>
+        </div>
+        <br />
+        <div className={"input-container"}>
+          <input value={email} placeholder="Enter your email here" onChange={(ev) => setEmail(ev.target.value)} className={"input-box"} />
+          <label className="login-error-label">{emailError}</label>
+        </div>
+        <br />
+        <div className={"input-container"}>
+          <input
+            type="password"
+            value={password}
+            placeholder="Enter your password here"
+            onChange={(ev) => setPassword(ev.target.value)}
+            className={"input-box"}
+          />
+          <label className="login-error-label">{passwordError}</label>
+        </div>
+        <br />
+        <div className={"input-container"}>
+          <input className={"input-button"} type="button" onClick={onButtonClick} value={"Log in"} />
+        </div>
+        <br />
+        <div className="forgotten-password">
+          <Link to="/forgotten-password">Forgotten your password?</Link>
+        </div>
       </div>
     </div>
   );

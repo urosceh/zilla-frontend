@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {IUserDto, UserCreate} from "../../entities/User";
+import ErrorModal from "../../errors/ErrorModal/ErrorModal";
 import {useCreateProject} from "../../hooks/useProject";
 import {useCreateUsers} from "../../hooks/useUser";
 import {AxiosClient} from "../../lib/AxiosClient";
@@ -33,6 +34,8 @@ const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
     });
   };
 
+  const [error, setError] = useState<string>("");
+
   const handleSendForgottenPasswordEmail = () => {
     const axiosInstance = AxiosClient.getInstance();
     selectedUsers.forEach((user) => {
@@ -42,7 +45,7 @@ const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
           setSelectedUsers(selectedUsers.filter((u) => u.userId !== user.userId));
         })
         .catch((error) => {
-          console.error(error);
+          setError(`${error.message}: ${error.response?.data}`);
         });
     });
   };
@@ -64,7 +67,7 @@ const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
           setSelectedManager(undefinedUser);
         })
         .catch((error) => {
-          console.error(error);
+          setError(`${error.message}: ${error.response?.data}`);
         });
     }
   };
@@ -87,11 +90,15 @@ const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
         lastName: userLasstName,
       };
 
-      createUsers([user]).then(() => {
-        setUserEmail("");
-        setUserFirstName("");
-        setUserLasstName("");
-      });
+      createUsers([user])
+        .then(() => {
+          setUserEmail("");
+          setUserFirstName("");
+          setUserLasstName("");
+        })
+        .catch((error) => {
+          setError(`${error.message}: ${error.response?.data}`);
+        });
     }
   };
 
@@ -100,130 +107,133 @@ const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
   const [userLasstName, setUserLasstName] = useState<string>();
 
   return (
-    <div className="admin-panel-container">
-      <div className="sending-forgotten-email">
-        <div className="sending-forgotten-email-select">
-          <div className="users-dropdown">
-            <label htmlFor="open" onClick={() => handleFilterClick("open")}>
-              Forgotten Email Users&nbsp;&nbsp;&nbsp;&nbsp;{openFilter === "open" ? "▲" : "▼"}
-            </label>
-            {openFilter === "open" && (
-              <div className={`users-dropdown-input ${openFilter === "open" ? "active" : ""}`}>
-                {allUsers.map((user) => (
-                  <label key={user.userId}>
-                    <input
-                      type="checkbox"
-                      value={user.userId}
-                      checked={selectedUsers.map((u) => u.userId).includes(user.userId)}
-                      onChange={() => handleSelectedUsersListChanged(user)}
-                    />
-                    {`${user.firstName} ${user.lastName} (${user.email})`}
-                  </label>
+    <div>
+      {error && <ErrorModal error={error} setError={setError} />}
+      <div className="admin-panel-container">
+        <div className="sending-forgotten-email">
+          <div className="sending-forgotten-email-select">
+            <div className="users-dropdown">
+              <label htmlFor="open" onClick={() => handleFilterClick("open")}>
+                Forgotten Email Users&nbsp;&nbsp;&nbsp;&nbsp;{openFilter === "open" ? "▲" : "▼"}
+              </label>
+              {openFilter === "open" && (
+                <div className={`users-dropdown-input ${openFilter === "open" ? "active" : ""}`}>
+                  {allUsers.map((user) => (
+                    <label key={user.userId}>
+                      <input
+                        type="checkbox"
+                        value={user.userId}
+                        checked={selectedUsers.map((u) => u.userId).includes(user.userId)}
+                        onChange={() => handleSelectedUsersListChanged(user)}
+                      />
+                      {`${user.firstName} ${user.lastName} (${user.email})`}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="sending-forgotten-email-list">
+            <div className="sending-forgotten-email-selected-users">
+              {selectedUsers.map((u) => {
+                return <div key={u.userId}>{u.email}</div>;
+              })}
+            </div>
+            <div className="sending-forgotten-email-button">
+              <button onClick={handleSendForgottenPasswordEmail}>Send Email</button>
+            </div>
+          </div>
+        </div>
+
+        <div className="create-project-container">
+          <form onSubmit={handleCreateProject}>
+            <div className="create-project-input">
+              <label className="create-project-input-label" htmlFor="projectName">
+                Project Name
+              </label>
+              <input
+                type="text"
+                id="projectName"
+                placeholder="Enter project name"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+              />
+            </div>
+            <div className="create-project-input">
+              <label className="create-project-input-label" htmlFor="projectKey">
+                Project Key
+              </label>
+              <input
+                type="text"
+                id="projectKey"
+                placeholder="Enter project key"
+                value={projectKey}
+                onChange={(e) => setProjectKey(e.target.value)}
+              />
+            </div>
+            <div className="create-project-input">
+              <label className="create-project-input-label" htmlFor="projectManager">
+                Project Manager
+              </label>
+              <select className="" value={selectedManager.email} onChange={handleManagerChange}>
+                {[...allUsers].map((user: IUserDto) => (
+                  <option key={user.userId} value={user.userId}>
+                    {user.email}
+                  </option>
                 ))}
-              </div>
-            )}
-          </div>
+              </select>
+            </div>
+
+            <div className="create-project-button">
+              <button type="submit">Create Project</button>
+            </div>
+          </form>
         </div>
-        <div className="sending-forgotten-email-list">
-          <div className="sending-forgotten-email-selected-users">
-            {selectedUsers.map((u) => {
-              return <div key={u.userId}>{u.email}</div>;
-            })}
-          </div>
-          <div className="sending-forgotten-email-button">
-            <button onClick={handleSendForgottenPasswordEmail}>Send Email</button>
-          </div>
+
+        <div className="create-user-container">
+          <form onSubmit={handleCreateUser}>
+            <div className="create-user-input">
+              <label className="create-user-input-label" htmlFor="userEmail">
+                User Email
+              </label>
+              <input
+                type="text"
+                id="userEmail"
+                placeholder="Enter user email"
+                value={userEmail}
+                onChange={(e) => setUserEmail(e.target.value)}
+              />
+            </div>
+            <div className="create-user-input">
+              <label className="create-user-input-label" htmlFor="userFirstName">
+                User Name
+              </label>
+              <input
+                type="text"
+                id="userFirstName"
+                placeholder="Enter user name"
+                value={userFirstName}
+                onChange={(e) => setUserFirstName(e.target.value)}
+              />
+            </div>
+            <div className="create-user-input">
+              <label className="create-user-input-label" htmlFor="userLasstName">
+                User Surname
+              </label>
+              <input
+                type="text"
+                id="userLasstName"
+                placeholder="Enter user name"
+                value={userLasstName}
+                onChange={(e) => setUserLasstName(e.target.value)}
+              />
+            </div>
+
+            <div className="create-user-button">
+              <button type="submit">Create User</button>
+            </div>
+          </form>
         </div>
-      </div>
-
-      <div className="create-project-container">
-        <form onSubmit={handleCreateProject}>
-          <div className="create-project-input">
-            <label className="create-project-input-label" htmlFor="projectName">
-              Project Name
-            </label>
-            <input
-              type="text"
-              id="projectName"
-              placeholder="Enter project name"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-            />
-          </div>
-          <div className="create-project-input">
-            <label className="create-project-input-label" htmlFor="projectKey">
-              Project Key
-            </label>
-            <input
-              type="text"
-              id="projectKey"
-              placeholder="Enter project key"
-              value={projectKey}
-              onChange={(e) => setProjectKey(e.target.value)}
-            />
-          </div>
-          <div className="create-project-input">
-            <label className="create-project-input-label" htmlFor="projectManager">
-              Project Manager
-            </label>
-            <select className="" value={selectedManager.email} onChange={handleManagerChange}>
-              {[...allUsers].map((user: IUserDto) => (
-                <option key={user.userId} value={user.userId}>
-                  {user.email}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="create-project-button">
-            <button type="submit">Create Project</button>
-          </div>
-        </form>
-      </div>
-
-      <div className="create-user-container">
-        <form onSubmit={handleCreateUser}>
-          <div className="create-user-input">
-            <label className="create-user-input-label" htmlFor="userEmail">
-              User Email
-            </label>
-            <input
-              type="text"
-              id="userEmail"
-              placeholder="Enter user email"
-              value={userEmail}
-              onChange={(e) => setUserEmail(e.target.value)}
-            />
-          </div>
-          <div className="create-user-input">
-            <label className="create-user-input-label" htmlFor="userFirstName">
-              User Name
-            </label>
-            <input
-              type="text"
-              id="userFirstName"
-              placeholder="Enter user name"
-              value={userFirstName}
-              onChange={(e) => setUserFirstName(e.target.value)}
-            />
-          </div>
-          <div className="create-user-input">
-            <label className="create-user-input-label" htmlFor="userLasstName">
-              User Surname
-            </label>
-            <input
-              type="text"
-              id="userLasstName"
-              placeholder="Enter user name"
-              value={userLasstName}
-              onChange={(e) => setUserLasstName(e.target.value)}
-            />
-          </div>
-
-          <div className="create-user-button">
-            <button type="submit">Create User</button>
-          </div>
-        </form>
       </div>
     </div>
   );
