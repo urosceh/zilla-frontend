@@ -1,12 +1,17 @@
-import React, {useState} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import "./SearchComponent.css";
 
-const SearchComponent = ({setData, placeholder}: {setData: React.Dispatch<React.SetStateAction<string>>; placeholder: string}) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+interface Props {
+  searchData: string;
+  setSearchData: Dispatch<SetStateAction<string>>;
+}
+
+const SearchComponent: React.FC<Props> = ({searchData, setSearchData}) => {
+  const [searchTerm, setSearchTerm] = useState<string>(searchData);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setData(searchTerm);
+    setSearchData(searchTerm);
   };
 
   return (

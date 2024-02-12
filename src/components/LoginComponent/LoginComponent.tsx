@@ -40,7 +40,7 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
       return;
     }
 
-    if (password.length < 7) {
+    if (password.length <= 7) {
       setPasswordError("The password must be 8 characters or longer");
       return;
     }
