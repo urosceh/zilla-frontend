@@ -20,8 +20,9 @@ const KanbanPage = () => {
   const {getIssueStatuses} = useGetIssueStatuses();
 
   useEffect(() => {
-    getAllIssues(projectKey).then((issues) => {
+    Promise.all([getAllIssues(projectKey), getIssueStatuses()]).then(([issues, statuses]) => {
       setIssues(issues);
+      setIssueStatuses(statuses);
 
       const uniqueUsers = issues.reduce<IUserDto[]>((acc, issue) => {
         if (issue.assignee && !acc.find((user) => user.userId === issue.assignee!.userId)) {
@@ -33,11 +34,26 @@ const KanbanPage = () => {
         return acc;
       }, []);
       setUsers(uniqueUsers.sort((a, b) => a.firstName!.localeCompare(b.firstName!)));
-
-      getIssueStatuses().then((statuses) => {
-        setIssueStatuses(statuses);
-      });
     });
+
+    // getAllIssues(projectKey).then((issues) => {
+    //   setIssues(issues);
+
+    //   const uniqueUsers = issues.reduce<IUserDto[]>((acc, issue) => {
+    //     if (issue.assignee && !acc.find((user) => user.userId === issue.assignee!.userId)) {
+    //       acc.push(issue.assignee);
+    //     }
+    //     if (issue.reporter && !acc.find((user) => user.userId === issue.reporter!.userId)) {
+    //       acc.push(issue.reporter);
+    //     }
+    //     return acc;
+    //   }, []);
+    //   setUsers(uniqueUsers.sort((a, b) => a.firstName!.localeCompare(b.firstName!)));
+
+    //   getIssueStatuses().then((statuses) => {
+    //     setIssueStatuses(statuses);
+    //   });
+    // });
   }, [projectKey]);
 
   const {updateIssue} = useUpdateIssue();

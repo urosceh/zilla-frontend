@@ -1,4 +1,5 @@
 import {Draggable} from "react-beautiful-dnd";
+import {useNavigate, useParams} from "react-router-dom";
 import {IIssueDto} from "../../entities/Issue";
 import "./Card.css";
 
@@ -8,26 +9,18 @@ interface Props {
 }
 
 const Card: React.FC<Props> = ({issue, index}) => {
+  const params = useParams();
+  const projectKey = params.projectKey as string;
+
+  const navigate = useNavigate();
+
   return (
     <Draggable key={issue.issueId} draggableId={issue.issueId} index={0}>
       {(provided) => (
         <>
-          {/* {modalShow && (
-            <CardDetails
-              updateCard={props.updateCard}
-              onClose={setModalShow}
-              card={props.card}
-              bid={props.bid}
-              removeCard={props.removeCard}
-            />
-          )} */}
-
           <div
             className="custom__card"
-            onClick={() => {
-              // open issue page
-              console.log("open issue page");
-            }}
+            onClick={() => navigate(`/${projectKey}/${issue.issueId}`)}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             ref={provided.innerRef}

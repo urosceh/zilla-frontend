@@ -1,8 +1,13 @@
+import React from "react";
 import {Link} from "react-router-dom";
 import {IProjectDto} from "../../entities/Project";
 import "./ProjectsTable.css";
 
-const ProjectsTable = (props: {projects: IProjectDto[]}) => {
+interface Props {
+  projects: IProjectDto[];
+}
+
+const ProjectsTable: React.FC<Props> = ({projects}) => {
   return (
     <table className="projects-table">
       <thead>
@@ -14,7 +19,7 @@ const ProjectsTable = (props: {projects: IProjectDto[]}) => {
         </tr>
       </thead>
       <tbody>
-        {props.projects.map((project) => (
+        {projects.map((project) => (
           <tr key={project.projectId} className="table-row">
             <td className="table-cell">
               <Link to={`/${project.projectKey}/issues`} className="project-link">

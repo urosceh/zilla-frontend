@@ -8,10 +8,15 @@ const ProjectsPage = () => {
 
   const [searchData, setSearchData] = useState("");
 
+  const [error, setError] = useState<string>("");
   useEffect(() => {
-    getProjects().then((projects) => {
-      console.log(projects);
-    });
+    getProjects()
+      .then((projects) => {
+        console.log(projects);
+      })
+      .catch((error) => {
+        setError(`${error.message}: ${error.response?.data}`);
+      });
   }, [searchData]);
 
   return (
