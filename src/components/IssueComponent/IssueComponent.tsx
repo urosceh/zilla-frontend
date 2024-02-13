@@ -54,6 +54,7 @@ const IssueComponent: React.FC<Props> = ({issue}) => {
     setSelectedAssignee(assignee || undefinedAssignee);
     const sprint = sprints.find((sprint) => sprint.sprintId === updatedIssue.sprint?.sprintId);
     setSelectedSprint(sprint || undefinedSprint);
+    issue.updatedAt = updatedIssue.updatedAt;
   };
 
   const handleSummaryChange = () => {

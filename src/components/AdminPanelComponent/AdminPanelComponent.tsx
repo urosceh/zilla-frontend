@@ -11,8 +11,8 @@ interface Props {
 }
 
 const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
-  const undefinedUser = {userId: "", email: "No Assignee"} as any;
-  const [selectedManager, setSelectedManager] = useState<IUserDto>(undefinedUser);
+  const undefinedUser = {userId: "", email: "No Manager"} as any;
+  const [selectedManager, setSelectedManager] = useState<IUserDto>();
   const [projectName, setProjectName] = useState<string>();
   const [projectKey, setProjectKey] = useState<string>();
 
@@ -54,12 +54,7 @@ const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
 
   const handleCreateProject = (e: any) => {
     e.preventDefault();
-    console.log({
-      projectName,
-      projectKey,
-      selectedManager,
-    });
-    if (projectName && projectKey && selectedManager.userId) {
+    if (projectName && projectKey && selectedManager?.userId) {
       createProject({projectName, projectKey, managerId: selectedManager.userId})
         .then(() => {
           setProjectName("");
@@ -69,14 +64,18 @@ const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
         .catch((error) => {
           setError(`${error.message}: ${error.response?.data}`);
         });
+    } else {
+      let errMsg = "";
+      !projectName && (errMsg += "Project Name must be defined\n");
+      !projectKey && (errMsg += "Project Key must be defined\n");
+      !selectedManager?.userId && (errMsg += "Project Manager must be defined\n");
+      setError(errMsg);
     }
   };
 
   const handleManagerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const manager = allUsers.find((user) => user.userId === e.target.value);
-    if (manager) {
-      setSelectedManager(manager);
-    }
+    const manager = allUsers.find((user) => user.userId === e.target.value) || undefinedUser;
+    setSelectedManager(manager);
   };
 
   const {createUsers} = useCreateUsers();
@@ -175,8 +174,8 @@ const AdminPanelComponent: React.FC<Props> = ({allUsers}) => {
               <label className="create-project-input-label" htmlFor="projectManager">
                 Project Manager
               </label>
-              <select className="" value={selectedManager.email} onChange={handleManagerChange}>
-                {[...allUsers].map((user: IUserDto) => (
+              <select className="" value={selectedManager?.userId} onChange={handleManagerChange}>
+                {[undefinedUser, ...allUsers].map((user: IUserDto) => (
                   <option key={user.userId} value={user.userId}>
                     {user.email}
                   </option>
