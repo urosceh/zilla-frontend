@@ -1,5 +1,6 @@
 import axios, {AxiosInstance} from "axios";
 import Cookies from "universal-cookie";
+import {BackendApiConfig} from "../config/backend.api.config";
 import {IIssueCreate, IIssueDto, IIssueSearchOptions, IIssueUpdate} from "../entities/Issue";
 import {ProjectCreate} from "../entities/Project";
 import {CreateSprint} from "../entities/Sprint";
@@ -13,7 +14,7 @@ export class AxiosClient {
 
   private constructor() {
     this._client = axios.create({
-      baseURL: "http://localhost:3000/api",
+      baseURL: BackendApiConfig.getBaseUrl(),
       headers: {
         "Content-Type": "application/json",
       },
