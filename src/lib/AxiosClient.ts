@@ -33,6 +33,10 @@ export class AxiosClient {
     this._instance._cookies = cookies;
   }
 
+  public async health(): Promise<void> {
+    await this._client.get("/health");
+  }
+
   public async login(email: string, password: string): Promise<{bearerToken: string; adminBearerToken?: string}> {
     const response = await this._client.post("/user/login", {email, password});
 
