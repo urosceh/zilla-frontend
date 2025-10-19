@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction, useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import Cookies from "universal-cookie";
 import ErrorModal from "../../errors/ErrorModal/ErrorModal";
 import {AxiosClient} from "../../lib/AxiosClient";
@@ -16,6 +16,7 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const {tenant} = useParams<{tenant?: string}>();
 
   const axiosInstance = AxiosClient.getInstance();
 
@@ -57,15 +58,30 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
         setLoggedIn(true);
         if (response.adminBearerToken && response.adminBearerToken === response.bearerToken) {
           setIsAdmin(true);
-          // localStorage.setItem("isAdmin", "true");
-          cookies.set("adminBearerToken", response.adminBearerToken, {path: "/"});
+          // Use tenant-scoped admin cookie
+          cookies.set(`adminBearerToken_${tenant}`, response.adminBearerToken, {path: "/"});
         }
-        cookies.set("bearerToken", response.bearerToken, {path: "/"});
+        // Use tenant-scoped bearer token cookie
+        cookies.set(`bearerToken_${tenant}`, response.bearerToken, {path: "/"});
 
-        navigate("/");
+        // Navigate to tenant-specific home
+        navigate(`/${tenant}`);
       })
       .catch((error: any) => {
-        setError(`${error.message}: ${error.response.data}`);
+        console.error(error);
+
+        // Handle invalid tenant (400 error)
+        if (error.response?.status === 400 && error.response?.data?.includes?.("tenant")) {
+          // Redirect to tenant error page
+          navigate("/", {replace: true});
+          return;
+        }
+
+        if (error.response?.data) {
+          setError(`${error.message}: ${error.response.data}`);
+        } else {
+          setError("An unknown error occurred");
+        }
       });
   };
 
@@ -98,7 +114,7 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
         </div>
         <br />
         <div className="forgotten-password">
-          <Link to="/forgotten-password">Forgotten your password?</Link>
+          <Link to={`/${tenant}/forgotten-password`}>Forgotten your password?</Link>
         </div>
       </div>
     </div>

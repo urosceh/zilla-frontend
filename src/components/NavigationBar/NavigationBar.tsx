@@ -1,5 +1,6 @@
 import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
+import {useTenant} from "../../contexts/TenantContext";
 import {IProjectDto} from "../../entities/Project";
 import ErrorModal from "../../errors/ErrorModal/ErrorModal";
 import {useGetProjects} from "../../hooks/useProjects";
@@ -14,6 +15,7 @@ interface Props {
 const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [projects, setProjects] = useState<IProjectDto[]>([]);
+  const {tenant} = useTenant();
 
   const {getProjects} = useGetProjects();
 
@@ -39,7 +41,10 @@ const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
       .logout()
       .then(() => {
         setLoggedIn(false);
-        navigate("/login");
+        // Always redirect to tenant-specific login, tenant must exist
+        if (tenant) {
+          navigate(`/${tenant}/login`);
+        }
       });
   };
 
@@ -49,12 +54,12 @@ const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
       <div className="navigation-bar">
         <div className="left-section">
           <div className="dropdown navigation-item">
-            <Link className="dropdown-button" to="/">
+            <Link className="dropdown-button" to={tenant ? `/${tenant}` : "/"}>
               Projects
             </Link>
             <div className="dropdown-content">
               {projects.map((project) => (
-                <Link key={project.projectId} to={`/${project.projectKey}/issues`}>
+                <Link key={project.projectId} to={tenant ? `/${tenant}/${project.projectKey}/issues` : `/${project.projectKey}/issues`}>
                   {project.projectName}
                 </Link>
               ))}
@@ -65,7 +70,7 @@ const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
             <div className="dropdown-button">Kanbans</div>
             <div className="dropdown-content">
               {projects.map((project) => (
-                <Link key={project.projectId} to={`/${project.projectKey}/kanban`}>
+                <Link key={project.projectId} to={tenant ? `/${tenant}/${project.projectKey}/kanban` : `/${project.projectKey}/kanban`}>
                   {project.projectName}
                 </Link>
               ))}
@@ -78,11 +83,11 @@ const NavigationBar: React.FC<Props> = ({isAdmin, setLoggedIn}) => {
             ⚙️
             {showDropdown && (
               <div className={`dropdown-content ${showDropdown ? "active" : ""}`}>
-                <Link to="/change-password">Change Password</Link>
+                <Link to={tenant ? `/${tenant}/change-password` : "/change-password"}>Change Password</Link>
                 <Link to="/" onClick={handleLogout}>
                   Logout
                 </Link>
-                {isAdmin && <Link to="/admin/panel">Admin Panel</Link>}
+                {isAdmin && <Link to={tenant ? `/${tenant}/admin/panel` : "/admin/panel"}>Admin Panel</Link>}
               </div>
             )}
           </div>

@@ -6,6 +6,7 @@ import {ProjectCreate} from "../entities/Project";
 import {CreateSprint} from "../entities/Sprint";
 import {IUserDto, UserCreate} from "../entities/User";
 import {ClientCookies} from "./ClientCookies";
+import {handleTenantError} from "./TenantErrorHandler";
 
 export class AxiosClient {
   private static _instance: AxiosClient;
@@ -19,6 +20,44 @@ export class AxiosClient {
         "Content-Type": "application/json",
       },
     });
+
+    // Add request interceptor to automatically include tenant header
+    this._client.interceptors.request.use((config) => {
+      const tenant = this.getCurrentTenant();
+      if (tenant) {
+        config.headers.tenant = tenant;
+      }
+      return config;
+    });
+
+    // Add response interceptor to handle tenant errors globally
+    this._client.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        // Handle tenant-related errors
+        if (this.getCurrentTenant() && handleTenantError(error)) {
+          return Promise.reject(new Error("Tenant error handled"));
+        }
+        return Promise.reject(error);
+      }
+    );
+  }
+
+  // Get current tenant from URL only (no localStorage in shared frontend)
+  private getCurrentTenant(): string | null {
+    // Get tenant from current URL path only
+    const pathSegments = window.location.pathname.split("/").filter((segment) => segment !== "");
+    if (pathSegments.length > 0 && this.isValidTenant(pathSegments[0])) {
+      return pathSegments[0];
+    }
+
+    // No fallback - tenant must be in URL for shared frontend
+    return null;
+  }
+
+  // Validate tenant name format
+  private isValidTenant(tenant: string): boolean {
+    return /^[a-zA-Z0-9-_]+$/.test(tenant);
   }
 
   public static getInstance(): AxiosClient {
@@ -33,29 +72,62 @@ export class AxiosClient {
     this._instance._cookies = cookies;
   }
 
+  // Helper methods for tenant-scoped cookies
+  private getBearerTokenKey(tenant?: string): string {
+    const currentTenant = tenant || this.getCurrentTenant();
+    return currentTenant ? `bearerToken_${currentTenant}` : "bearerToken";
+  }
+
+  private getAdminBearerTokenKey(tenant?: string): string {
+    const currentTenant = tenant || this.getCurrentTenant();
+    return currentTenant ? `adminBearerToken_${currentTenant}` : "adminBearerToken";
+  }
+
+  private getBearerToken(tenant?: string): string | undefined {
+    return this._cookies.get(this.getBearerTokenKey(tenant));
+  }
+
+  // Helper to get authorization headers with tenant-scoped token
+  private getAuthHeaders() {
+    const currentTenant = this.getCurrentTenant();
+    return {
+      ...this._client.defaults.headers.common,
+      Authorization: this.getBearerToken(currentTenant || undefined),
+    };
+  }
+
   public async health(): Promise<void> {
     await this._client.get("/health");
   }
 
   public async login(email: string, password: string): Promise<{bearerToken: string; adminBearerToken?: string}> {
     const response = await this._client.post("/user/login", {email, password});
+    const currentTenant = this.getCurrentTenant();
 
-    this._cookies.set("bearerToken", response.data.bearerToken, {path: "/"});
+    // Use tenant-scoped cookie names
+    this._cookies.set(this.getBearerTokenKey(currentTenant || undefined), response.data.bearerToken, {path: "/"});
+
+    if (response.data.adminBearerToken) {
+      this._cookies.set(this.getAdminBearerTokenKey(currentTenant || undefined), response.data.adminBearerToken, {path: "/"});
+    }
 
     return response.data;
   }
 
   public async logout(): Promise<void> {
-    const cookie = this._cookies.get("bearerToken");
+    const currentTenant = this.getCurrentTenant();
+    const bearerToken = this.getBearerToken(currentTenant || undefined);
+
     await this._client.post("/user/logout", null, {
       headers: {
         ...this._client.defaults.headers.common,
-        Authorization: this._cookies.get("bearerToken"),
+        Authorization: bearerToken,
       },
     });
 
-    this._cookies.remove("bearerToken");
-    this._cookies.remove("adminBearerToken");
+    // Remove tenant-scoped cookies
+    this._cookies.remove(this.getBearerTokenKey(currentTenant || undefined));
+    this._cookies.remove(this.getAdminBearerTokenKey(currentTenant || undefined));
   }
 
   public async sendPasswordResetEmail(email: string): Promise<void> {
@@ -64,10 +136,7 @@ export class AxiosClient {
         "/user/forgotten-password",
         {email},
         {
-          headers: {
-            ...this._client.defaults.headers.common,
-            Authorization: this._cookies.get("bearerToken"),
-          },
+          headers: this.getAuthHeaders(),
         }
       );
     } catch (error) {
@@ -82,10 +151,7 @@ export class AxiosClient {
     };
 
     await this._client.put("/user/password", body, {
-      headers: {
-        ...this._client.defaults.headers.common,
-        Authorization: this._cookies.get("bearerToken"),
-      },
+      headers: this.getAuthHeaders(),
     });
   }
 
@@ -114,10 +180,7 @@ export class AxiosClient {
       }
 
       const response = await this._client.get("/user/all", {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
         params,
       });
 
@@ -141,10 +204,7 @@ export class AxiosClient {
         "/user/create-batch",
         {users},
         {
-          headers: {
-            ...this._client.defaults.headers.common,
-            Authorization: this._cookies.get("bearerToken"),
-          },
+          headers: this.getAuthHeaders(),
         }
       );
     } catch (error) {
@@ -157,10 +217,7 @@ export class AxiosClient {
       const params = search ? {search} : {};
 
       const response = await this._client.get("/project/all", {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
         params,
       });
 
@@ -173,10 +230,7 @@ export class AxiosClient {
   public async getIssue(projectKey: string, issueId: string): Promise<any> {
     const response = await this._client.get(`/issue/${issueId}`, {
       params: {projectKey},
-      headers: {
-        ...this._client.defaults.headers.common,
-        Authorization: this._cookies.get("bearerToken"),
-      },
+      headers: this.getAuthHeaders(),
     });
 
     return response.data;
@@ -185,10 +239,7 @@ export class AxiosClient {
   public async createIssue(issue: IIssueCreate): Promise<string> {
     try {
       const response = await this._client.post("/issue", issue, {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
       });
 
       return response.data.issueId;
@@ -201,10 +252,7 @@ export class AxiosClient {
     try {
       const {issueId, projectKey, ...body} = issue;
       const response = await this._client.patch(`/issue/${issue.issueId}`, body, {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
         params: {projectKey},
       });
 
@@ -226,10 +274,7 @@ export class AxiosClient {
         sprintIds: options?.sprintIds,
       };
       const response = await this._client.get(`issue/project/${projectKey}`, {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
         params,
       });
 
@@ -242,10 +287,7 @@ export class AxiosClient {
   public async getCurrentSprintIssues(projectKey: string): Promise<any> {
     try {
       const response = await this._client.get(`sprint/${projectKey}/issues`, {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
       });
 
       return response.data;
@@ -257,10 +299,7 @@ export class AxiosClient {
   public async getProject(projectKey: string): Promise<any> {
     try {
       const response = await this._client.get(`/project/${projectKey}`, {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
       });
 
       return response.data;
@@ -278,10 +317,7 @@ export class AxiosClient {
       };
 
       const response = await this._client.post("/project", project, {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
       });
 
       return response.data;
@@ -293,10 +329,7 @@ export class AxiosClient {
   public async getSprints(projectKey: string): Promise<any> {
     try {
       const response = await this._client.get(`/sprint/${projectKey}`, {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
       });
 
       return response.data;
@@ -308,10 +341,7 @@ export class AxiosClient {
   public async createSprint(sprint: CreateSprint): Promise<any> {
     try {
       const response = await this._client.post("/sprint", sprint, {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
       });
 
       return response.data;
@@ -323,10 +353,7 @@ export class AxiosClient {
   public async getIssueStatuses(): Promise<string[]> {
     try {
       const response = await this._client.get("/issue-status/", {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
       });
 
       return response.data;
@@ -341,10 +368,7 @@ export class AxiosClient {
         "/access",
         {userIds, projectKey},
         {
-          headers: {
-            ...this._client.defaults.headers.common,
-            Authorization: this._cookies.get("bearerToken"),
-          },
+          headers: this.getAuthHeaders(),
         }
       );
     } catch (error) {
@@ -355,10 +379,7 @@ export class AxiosClient {
   public async removeAccess(projectKey: string, userIds: string[]): Promise<void> {
     try {
       await this._client.delete("/access", {
-        headers: {
-          ...this._client.defaults.headers.common,
-          Authorization: this._cookies.get("bearerToken"),
-        },
+        headers: this.getAuthHeaders(),
         data: {userIds, projectKey},
       });
     } catch (error) {
