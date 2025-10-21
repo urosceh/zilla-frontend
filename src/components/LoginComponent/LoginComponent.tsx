@@ -18,11 +18,17 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
   const [passwordError, setPasswordError] = useState("");
   const {tenant} = useParams<{tenant?: string}>();
 
+  // TEST: Basic console logging
+  console.log("🚀 LoginComponent rendered");
+  console.warn("⚠️ This is a warning test");
+  console.error("❌ This is an error test");
+
   const axiosInstance = AxiosClient.getInstance();
 
   const navigate = useNavigate();
 
   const onButtonClick = () => {
+    console.log("🔘 Login button clicked");
     setEmailError("");
     setPasswordError("");
 
@@ -51,6 +57,7 @@ const LoginComponent: React.FC<Props> = ({setLoggedIn, setIsAdmin, cookies}) => 
 
   const [error, setError] = useState<string>("");
   const login = () => {
+    console.log("🔐 Starting login process");
     axiosInstance
       .login(email, password)
       .then((response) => {

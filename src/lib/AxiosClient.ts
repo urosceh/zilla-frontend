@@ -30,10 +30,18 @@ export class AxiosClient {
       return config;
     });
 
-    // Add response interceptor to handle tenant errors globally
+    // Add response interceptor to handle tenant errors globally and log all errors
     this._client.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        console.log("✅ AxiosClient response interceptor - SUCCESS:", response.config?.url);
+        return response;
+      },
       (error) => {
+        console.log("❌ AxiosClient response interceptor - ERROR:", error.config?.url, error.message);
+
+        // Log all backend errors
+        this.logBackendError(error);
+
         // Handle tenant-related errors
         if (this.getCurrentTenant() && handleTenantError(error)) {
           return Promise.reject(new Error("Tenant error handled"));
@@ -58,6 +66,53 @@ export class AxiosClient {
   // Validate tenant name format
   private isValidTenant(tenant: string): boolean {
     return /^[a-zA-Z0-9-_]+$/.test(tenant);
+  }
+
+  // Log backend errors with comprehensive details
+  private logBackendError(error: any): void {
+    const timestamp = new Date().toISOString();
+    const currentTenant = this.getCurrentTenant();
+
+    // Force log to ensure visibility
+    console.log("🔍 AxiosClient logBackendError called with:", error);
+
+    // Extract error details
+    const errorDetails = {
+      timestamp,
+      tenant: currentTenant,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      url: error.config?.url,
+      method: error.config?.method?.toUpperCase(),
+      headers: error.config?.headers,
+      requestData: error.config?.data,
+      responseData: error.response?.data,
+      message: error.message,
+      stack: error.stack,
+    };
+
+    // Log to console with different levels based on error type
+    if (error.response?.status >= 500) {
+      console.error("🚨 Backend Server Error:", errorDetails);
+    } else if (error.response?.status >= 400) {
+      console.warn("⚠️ Backend Client Error:", errorDetails);
+    } else if (error.code === "NETWORK_ERROR" || error.message === "Network Error") {
+      console.error("🌐 Network Error:", errorDetails);
+    } else {
+      console.error("❌ Backend Error:", errorDetails);
+    }
+
+    // Additional structured logging for debugging
+    console.group("🔍 Error Debug Info");
+    console.log("Request URL:", error.config?.baseURL + error.config?.url);
+    console.log("Request Method:", error.config?.method?.toUpperCase());
+    console.log("Request Headers:", error.config?.headers);
+    console.log("Request Data:", error.config?.data);
+    console.log("Response Status:", error.response?.status);
+    console.log("Response Headers:", error.response?.headers);
+    console.log("Response Data:", error.response?.data);
+    console.log("Error Message:", error.message);
+    console.groupEnd();
   }
 
   public static getInstance(): AxiosClient {
@@ -139,7 +194,14 @@ export class AxiosClient {
           headers: this.getAuthHeaders(),
         }
       );
-    } catch (error) {
+    } catch (error: any) {
+      console.error("📧 Password Reset Email Error:", {
+        timestamp: new Date().toISOString(),
+        email,
+        error: error.message,
+        status: error.response?.status,
+        responseData: error.response?.data,
+      });
       throw error;
     }
   }
@@ -163,7 +225,14 @@ export class AxiosClient {
       };
 
       await this._client.post("/user/set-forgotten-password", body);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("🔐 Password Reset Error:", {
+        timestamp: new Date().toISOString(),
+        securityCode: data.securityCode ? "***" : "undefined",
+        error: error.message,
+        status: error.response?.status,
+        responseData: error.response?.data,
+      });
       throw error;
     }
   }
@@ -185,7 +254,14 @@ export class AxiosClient {
       });
 
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      console.error("👥 Get All Users Error:", {
+        timestamp: new Date().toISOString(),
+        projectKey,
+        error: error.message,
+        status: error.response?.status,
+        responseData: error.response?.data,
+      });
       throw error;
     }
   }
@@ -207,7 +283,15 @@ export class AxiosClient {
           headers: this.getAuthHeaders(),
         }
       );
-    } catch (error) {
+    } catch (error: any) {
+      console.error("👥 Create Users Error:", {
+        timestamp: new Date().toISOString(),
+        userCount: usersForCreate.length,
+        userEmails: usersForCreate.map((u) => u.email),
+        error: error.message,
+        status: error.response?.status,
+        responseData: error.response?.data,
+      });
       throw error;
     }
   }
@@ -222,7 +306,14 @@ export class AxiosClient {
       });
 
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      console.error("📁 Get All Projects Error:", {
+        timestamp: new Date().toISOString(),
+        search,
+        error: error.message,
+        status: error.response?.status,
+        responseData: error.response?.data,
+      });
       throw error;
     }
   }
@@ -243,7 +334,15 @@ export class AxiosClient {
       });
 
       return response.data.issueId;
-    } catch (error) {
+    } catch (error: any) {
+      console.error("🎫 Create Issue Error:", {
+        timestamp: new Date().toISOString(),
+        projectKey: issue.projectKey,
+        issueSummary: issue.summary,
+        error: error.message,
+        status: error.response?.status,
+        responseData: error.response?.data,
+      });
       throw error;
     }
   }
@@ -257,7 +356,15 @@ export class AxiosClient {
       });
 
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      console.error("🎫 Update Issue Error:", {
+        timestamp: new Date().toISOString(),
+        issueId: issue.issueId,
+        projectKey: issue.projectKey,
+        error: error.message,
+        status: error.response?.status,
+        responseData: error.response?.data,
+      });
       throw error;
     }
   }
@@ -279,7 +386,15 @@ export class AxiosClient {
       });
 
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      console.error("🎫 Get Project Issues Error:", {
+        timestamp: new Date().toISOString(),
+        projectKey,
+        options,
+        error: error.message,
+        status: error.response?.status,
+        responseData: error.response?.data,
+      });
       throw error;
     }
   }
