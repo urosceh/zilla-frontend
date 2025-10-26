@@ -38,6 +38,10 @@ export const useUpdateIssue: () => {
   const updateIssue = async (updateIssue: IIssueUpdate) => {
     setIsLoading(true);
 
+    if (!updateIssue.assigneeId) {
+      updateIssue.assigneeId = null;
+    }
+
     const issue: IIssueDto = await axiosInstance.updateIssue(updateIssue);
 
     setIsLoading(false);

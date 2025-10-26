@@ -39,18 +39,20 @@ const AppContent: React.FC = () => {
   useTenantSync();
 
   useEffect(() => {
-    const bearerToken = cookies.get("bearerToken");
+    // Check for tenant-scoped bearer token
+    const bearerToken = cookies.get(`bearerToken_${tenant}`);
     if (!bearerToken) {
       setLoggedIn(false);
     } else {
       setLoggedIn(true);
     }
 
-    const adminBearerToken = cookies.get("adminBearerToken");
+    // Check for tenant-scoped admin bearer token
+    const adminBearerToken = cookies.get(`adminBearerToken_${tenant}`);
     if (adminBearerToken) {
       setIsAdmin(true);
     }
-  }, []);
+  }, [tenant]);
 
   return (
     <>

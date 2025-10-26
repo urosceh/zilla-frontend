@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import {useTenant} from "../../contexts/TenantContext";
 import {IProjectDto} from "../../entities/Project";
 import "./ProjectsTable.css";
 
@@ -8,6 +9,8 @@ interface Props {
 }
 
 const ProjectsTable: React.FC<Props> = ({projects}) => {
+  const {tenant} = useTenant();
+
   return (
     <table className="projects-table">
       <thead>
@@ -22,13 +25,16 @@ const ProjectsTable: React.FC<Props> = ({projects}) => {
         {projects.map((project) => (
           <tr key={project.projectId} className="table-row">
             <td className="table-cell">
-              <Link to={`/${project.projectKey}/issues`} className="project-link">
+              <Link to={tenant ? `/${tenant}/${project.projectKey}/issues` : `/${project.projectKey}/issues`} className="project-link">
                 {project.projectName}
               </Link>
             </td>
             <td className="table-cell">
               {project.isManager ? (
-                <Link to={`/manager/${project.projectKey}/panel`} className="manager-project-link">
+                <Link
+                  to={tenant ? `/${tenant}/manager/${project.projectKey}/panel` : `/manager/${project.projectKey}/panel`}
+                  className="manager-project-link"
+                >
                   {project.projectKey}
                 </Link>
               ) : (

@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import {useTenant} from "../../contexts/TenantContext";
 import {IIssueDto} from "../../entities/Issue";
 import "./IssuesTable.css";
 
@@ -8,6 +9,8 @@ interface Props {
 }
 
 const IssuesTable: React.FC<Props> = ({issues}) => {
+  const {tenant} = useTenant();
+
   return (
     <table className="issue-table">
       <thead>
@@ -26,7 +29,10 @@ const IssuesTable: React.FC<Props> = ({issues}) => {
             <td className="reporter-cell">{issue.reporter.email}</td>
             <td className="created-cell">{issue.createdAt}</td>
             <td className="summary-cell">
-              <Link to={`/${issue.projectKey}/${issue.issueId}`} className="summary-link">
+              <Link
+                to={tenant ? `/${tenant}/${issue.projectKey}/${issue.issueId}` : `/${issue.projectKey}/${issue.issueId}`}
+                className="summary-link"
+              >
                 {issue.summary}
               </Link>
             </td>

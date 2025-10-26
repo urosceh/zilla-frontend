@@ -1,5 +1,6 @@
 import React, {Dispatch, SetStateAction, useState} from "react";
 import {Link, useParams} from "react-router-dom";
+import {useTenant} from "../../contexts/TenantContext";
 import {ISprintDto} from "../../entities/Sprint";
 import {IUserDto} from "../../entities/User";
 import "./FilterComponent.css";
@@ -31,6 +32,7 @@ const FilterComponent: React.FC<Props> = ({
 }) => {
   const params = useParams();
   const projectKey = params.projectKey as string;
+  const {tenant} = useTenant();
 
   const [openFilter, setOpenFilter] = useState<string | null>(null);
 
@@ -174,7 +176,7 @@ const FilterComponent: React.FC<Props> = ({
       </div>
 
       <div className="create-issue-navigation-item">
-        <Link to={`/${projectKey}/new`}>+</Link>
+        <Link to={tenant ? `/${tenant}/${projectKey}/new` : `/${projectKey}/new`}>+</Link>
       </div>
     </div>
   );

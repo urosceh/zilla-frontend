@@ -177,6 +177,7 @@ export class AxiosClient {
       headers: {
         ...this._client.defaults.headers.common,
         Authorization: bearerToken,
+        tenant: currentTenant,
       },
     });
 
@@ -379,6 +380,7 @@ export class AxiosClient {
         assigneeIds: options?.asigneeIds,
         reporterIds: options?.reporterIds,
         sprintIds: options?.sprintIds,
+        issueStatuses: options?.issueStatuses,
       };
       const response = await this._client.get(`issue/project/${projectKey}`, {
         headers: this.getAuthHeaders(),
